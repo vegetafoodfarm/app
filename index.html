@@ -7,23 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans pb-10">
-
-  <!-- Header -->
-  <header class="bg-emerald-600 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-40">
-    <div class="flex items-center space-x-2">
-      <i class="fa-solid fa-seedling text-2xl"></i>
-      <h1 class="text-xl font-bold">เขาเขียวฟาร์มผัก</h1>
-    </div>
-    <div class="flex items-center space-x-3">
-      <button onclick="openSettingsWithPassword()" class="p-2 text-white hover:bg-emerald-700 rounded-full transition" title="ตั้งค่า">
-        <i class="fa-solid fa-gear text-xl"></i>
-      </button>
-      <button onclick="logout()" class="p-2 text-white hover:bg-emerald-700 rounded-full transition" title="เปลี่ยนผู้ใช้">
-        <i class="fa-solid fa-right-from-bracket text-xl"></i>
-      </button>
-    </div>
-  </header>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans pb-10">
 
   <!-- Registration / Login View -->
   <div id="auth-view" class="max-w-md mx-auto m-6 p-6 bg-white rounded-2xl shadow-lg">
@@ -37,11 +21,11 @@
     <form onsubmit="handleRegister(event)" class="space-y-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อพนักงาน (by)</label>
-        <input type="text" id="reg-by" required placeholder="เช่น A, B, C หรือ ชื่อผู้บันทึก" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        <input type="text" id="reg-by" required placeholder="เช่น kug" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">รหัสพนักงาน (ID)</label>
-        <input type="text" id="reg-id" required placeholder="เช่น 001" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        <input type="text" id="reg-id" required placeholder="เช่น W901" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
       </div>
       <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition">
         บันทึกเข้าใช้งาน
@@ -49,84 +33,107 @@
     </form>
   </div>
 
-  <!-- Main Dashboard Menu View -->
+  <!-- Main Dashboard Menu View (Matches original layout) -->
   <div id="menu-view" class="max-w-md mx-auto p-4 hidden space-y-4">
-    <!-- User info banner with updated title -->
-    <div class="bg-emerald-600 text-white p-4 rounded-2xl shadow-md flex justify-between items-center">
+    
+    <!-- Top Bar with User Info & Switch Button -->
+    <div class="bg-emerald-600 text-white p-4 rounded-2xl shadow-md flex justify-between items-center relative">
       <div class="flex items-center space-x-3">
-        <div class="bg-white/20 p-3 rounded-xl text-2xl">🌱</div>
+        <div class="bg-white/20 text-white w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl" id="user-initial">K</div>
         <div>
-          <div class="text-xl font-bold">เขาเขียวฟาร์มผัก</div>
-          <div class="text-sm text-emerald-100">ผู้ใช้: <span id="user-display">--</span></div>
+          <div class="text-xs text-emerald-200">ผู้บันทึกข้อมูลปัจจุบัน</div>
+          <div class="text-lg font-bold" id="user-display">kug</div>
+          <div class="text-xs text-emerald-100" id="id-display">ID: W901</div>
         </div>
       </div>
-      <div class="text-right">
-        <div class="text-xs text-emerald-200 font-bold">วันที่</div>
-        <div class="text-sm font-medium" id="date-display">--/--/----</div>
+      <div class="flex items-center space-x-2">
+        <button onclick="logout()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition">
+          เปลี่ยนผู้ใช้
+        </button>
+        <button onclick="openSettingsWithPassword()" class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-xl text-sm transition" title="ตั้งค่า">
+          <i class="fa-solid fa-gear"></i>
+        </button>
       </div>
     </div>
 
-    <h3 class="text-lg font-bold text-slate-700 px-1">เลือกรายการทำงาน</h3>
+    <!-- Section Title -->
+    <div class="flex justify-between items-center px-1 pt-2">
+      <h3 class="text-base font-bold text-slate-700">เลือกรายการทำกิจกรรม</h3>
+      <span class="text-xs text-slate-400">แตะเพื่อกรอกข้อมูล</span>
+    </div>
 
-    <!-- 5 Big Menu Cards for Low-literacy workers -->
-    <div class="grid grid-cols-1 gap-4">
+    <!-- 2x2 Grid + Full Width Cards Layout -->
+    <div class="grid grid-cols-2 gap-4">
 
       <!-- 1) ปลูก -->
-      <button onclick="openForm('ปลูก', 'sprout', 'bg-emerald-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-emerald-500 hover:bg-emerald-50 text-left flex items-center space-x-4 active:scale-98 transition">
-        <div class="bg-emerald-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">
+      <button onclick="openForm('ปลูก', 'sprout', 'bg-emerald-500')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md text-left flex flex-col justify-between relative overflow-hidden active:scale-98 transition">
+        <div class="absolute left-0 top-0 bottom-0 w-2 bg-emerald-500"></div>
+        <div class="bg-emerald-50 text-emerald-600 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3 ml-1">
           🌱
         </div>
-        <div>
-          <div class="text-2xl font-extrabold text-slate-800">1) ปลูก</div>
-          <div class="text-xs text-slate-500">บันทึกการลงแปลงปลูกผัก</div>
+        <div class="ml-1">
+          <div class="text-lg font-extrabold text-slate-800">1. ปลูก</div>
+          <div class="text-xs text-slate-400 font-medium">Planting</div>
         </div>
       </button>
 
       <!-- 2) เติมปุ๋ย -->
-      <button onclick="openForm('เติมปุ๋ย', 'flask', 'bg-blue-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-blue-500 hover:bg-blue-50 text-left flex items-center space-x-4 active:scale-98 transition">
-        <div class="bg-blue-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">
+      <button onclick="openForm('เติมปุ๋ย', 'flask', 'bg-amber-400')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md text-left flex flex-col justify-between relative overflow-hidden active:scale-98 transition">
+        <div class="absolute left-0 top-0 bottom-0 w-2 bg-amber-400"></div>
+        <div class="bg-amber-50 text-amber-500 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3 ml-1">
           🧪
         </div>
-        <div>
-          <div class="text-2xl font-extrabold text-slate-800">2) เติมปุ๋ย</div>
-          <div class="text-xs text-slate-500">บันทึกค่าวัดและปริมาณปุ๋ย</div>
+        <div class="ml-1">
+          <div class="text-lg font-extrabold text-slate-800">2. เติมปุ๋ย</div>
+          <div class="text-xs text-slate-400 font-medium">Add Fertilizer</div>
         </div>
       </button>
 
       <!-- 3) ใส่ยา -->
-      <button onclick="openForm('ใส่ยา', 'tablets', 'bg-purple-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-purple-500 hover:bg-purple-50 text-left flex items-center space-x-4 active:scale-98 transition">
-        <div class="bg-purple-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">
+      <button onclick="openForm('ใส่ยา', 'tablets', 'bg-rose-500')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md text-left flex flex-col justify-between relative overflow-hidden active:scale-98 transition">
+        <div class="absolute left-0 top-0 bottom-0 w-2 bg-rose-500"></div>
+        <div class="bg-rose-50 text-rose-500 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3 ml-1">
           💊
         </div>
-        <div>
-          <div class="text-2xl font-extrabold text-slate-800">3) ใส่ยา</div>
-          <div class="text-xs text-slate-500">บันทึกการใส่ยาและอายุด้านแปลง</div>
+        <div class="ml-1">
+          <div class="text-lg font-extrabold text-slate-800">3. ใส่ยา</div>
+          <div class="text-xs text-slate-400 font-medium">Medicine/Pesticide</div>
         </div>
       </button>
 
       <!-- 4) ฉีดใบ -->
-      <button onclick="openForm('ฉีดใบ', 'spray-can', 'bg-amber-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-amber-500 hover:bg-amber-50 text-left flex items-center space-x-4 active:scale-98 transition">
-        <div class="bg-amber-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">
+      <button onclick="openForm('ฉีดใบ', 'spray-can', 'bg-cyan-400')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md text-left flex flex-col justify-between relative overflow-hidden active:scale-98 transition">
+        <div class="absolute left-0 top-0 bottom-0 w-2 bg-cyan-400"></div>
+        <div class="bg-cyan-50 text-cyan-500 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3 ml-1">
           🚿
         </div>
-        <div>
-          <div class="text-2xl font-extrabold text-slate-800">4) ฉีดใบ</div>
-          <div class="text-xs text-slate-500">บันทึกการฉีดทางใบ</div>
-        </div>
-      </button>
-
-      <!-- 5) เก็บเกี่ยว -->
-      <button onclick="openForm('เก็บเกี่ยว', 'basket-shopping', 'bg-rose-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-rose-500 hover:bg-rose-50 text-left flex items-center space-x-4 active:scale-98 transition">
-        <div class="bg-rose-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">
-          🧺
-        </div>
-        <div>
-          <div class="text-2xl font-extrabold text-slate-800">5) เก็บเกี่ยว</div>
-          <div class="text-xs text-slate-500">บันทึกจำนวนผลผลิตที่เก็บเกี่ยว</div>
+        <div class="ml-1">
+          <div class="text-lg font-extrabold text-slate-800">4. ฉีดใบ</div>
+          <div class="text-xs text-slate-400 font-medium">Foliar Spray</div>
         </div>
       </button>
 
     </div>
+
+    <!-- 5) เก็บเกี่ยว (Full width card) -->
+    <div>
+      <button onclick="openForm('เก็บเกี่ยว', 'basket-shopping', 'bg-purple-500')" class="w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md text-left flex items-center justify-between relative overflow-hidden active:scale-98 transition">
+        <div class="absolute left-0 top-0 bottom-0 w-2 bg-purple-500"></div>
+        <div class="flex items-center space-x-4 ml-1">
+          <div class="bg-purple-50 text-purple-600 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl">
+            🧺
+          </div>
+          <div>
+            <div class="text-lg font-extrabold text-slate-800">5. เก็บเกี่ยว</div>
+            <div class="text-xs text-slate-400 font-medium">Harvesting Yield</div>
+          </div>
+        </div>
+        <div class="text-slate-300 pr-2">
+          <i class="fa-solid fa-chevron-right text-lg"></i>
+        </div>
+      </button>
+    </div>
+
   </div>
 
   <!-- Dynamic Form View -->
@@ -257,7 +264,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       checkAuth();
-      updateDateDisplay();
     });
 
     function getAdminPassword() {
@@ -300,10 +306,13 @@
 
     function checkAuth() {
       const userBy = localStorage.getItem('farm_user_by');
+      const userId = localStorage.getItem('farm_user_id');
       if (userBy) {
         document.getElementById('auth-view').classList.add('hidden');
         document.getElementById('menu-view').classList.remove('hidden');
         document.getElementById('user-display').innerText = userBy;
+        document.getElementById('id-display').innerText = userId ? `ID: ${userId}` : '';
+        document.getElementById('user-initial').innerText = userBy.charAt(0).toUpperCase();
       } else {
         document.getElementById('auth-view').classList.remove('hidden');
         document.getElementById('menu-view').classList.add('hidden');
@@ -330,11 +339,6 @@
       }
     }
 
-    function updateDateDisplay() {
-      const now = new Date();
-      document.getElementById('date-display').innerText = formatDateToDisplay(now);
-    }
-
     function formatDateToDisplay(d) {
       const day = String(d.getDate()).padStart(2, '0');
       const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -354,7 +358,6 @@
       const now = new Date();
       const userBy = localStorage.getItem('farm_user_by') || '';
 
-      // Set input-date value to YYYY-MM-DD for native HTML date picker
       const yyyy = now.getFullYear();
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const dd = String(now.getDate()).padStart(2, '0');
@@ -416,7 +419,6 @@
       const now = new Date();
       const userBy = localStorage.getItem('farm_user_by') || '';
 
-      // Convert editable date picker value (YYYY-MM-DD) to DD/MM/YYYY format
       const rawDateVal = document.getElementById('input-date').value;
       let formattedDate = formatDateToDisplay(now);
       if (rawDateVal) {
