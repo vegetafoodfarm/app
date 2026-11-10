@@ -1,836 +1,443 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ระบบบันทึกข้อมูลแปลงผัก (Veggie Farm Log)</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Kanit', sans-serif;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .touch-btn {
-            transition: transform 0.1s active, background-color 0.2s;
-        }
-        .touch-btn:active {
-            transform: scale(0.96);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เขาเขียวฟาร์มผัก</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans pb-10">
 
-    <!-- Header Navigation -->
-    <header class="bg-emerald-600 text-white shadow-md sticky top-0 z-30">
-        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <div class="bg-white/20 p-2 rounded-xl">
-                    <i data-lucide="sprout" class="w-6 h-6 text-emerald-100"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight">ฟาร์มผักสด (act)</h1>
-                    <p id="headerWorkerBadge" class="text-xs text-emerald-100 font-light opacity-90">ยังไม่ได้ลงทะเบียน</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-1">
-                <button onclick="showHistory()" class="p-2.5 rounded-xl bg-emerald-700/60 hover:bg-emerald-700 text-white flex items-center justify-center relative touch-btn" title="ประวัติการบันทึก">
-                    <i data-lucide="history" class="w-5 h-5"></i>
-                    <span id="historyBadge" class="hidden absolute -top-1 -right-1 bg-amber-400 text-slate-900 font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
-                </button>
-                <button onclick="openSettingsModal()" class="p-2.5 rounded-xl bg-emerald-700/60 hover:bg-emerald-700 text-white flex items-center justify-center touch-btn" title="ตั้งค่า">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                </button>
-            </div>
-        </div>
-    </header>
+  <!-- Header -->
+  <header class="bg-emerald-600 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-40">
+    <div class="flex items-center space-x-2">
+      <i class="fa-solid fa-seedling text-2xl"></i>
+      <h1 class="text-xl font-bold">เขาเขียวฟาร์มผัก</h1>
+    </div>
+    <div class="flex items-center space-x-3">
+      <button onclick="openSettingsWithPassword()" class="p-2 text-white hover:bg-emerald-700 rounded-full transition" title="ตั้งค่า">
+        <i class="fa-solid fa-gear text-xl"></i>
+      </button>
+      <button onclick="logout()" class="p-2 text-white hover:bg-emerald-700 rounded-full transition" title="เปลี่ยนผู้ใช้">
+        <i class="fa-solid fa-right-from-bracket text-xl"></i>
+      </button>
+    </div>
+  </header>
 
-    <!-- Main Container -->
-    <main class="max-w-md mx-auto w-full flex-1 p-4 pb-20">
+  <!-- Registration / Login View -->
+  <div id="auth-view" class="max-w-md mx-auto m-6 p-6 bg-white rounded-2xl shadow-lg">
+    <div class="text-center mb-6">
+      <div class="bg-emerald-100 text-emerald-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+        <i class="fa-solid fa-user-plus text-2xl"></i>
+      </div>
+      <h2 class="text-2xl font-bold">ลงทะเบียนผู้ใช้งาน</h2>
+      <p class="text-gray-500 text-sm mt-1">กรอกชื่อและรหัสพนักงานสำหรับการเข้าใช้งานครั้งแรก</p>
+    </div>
+    <form onsubmit="handleRegister(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อพนักงาน (by)</label>
+        <input type="text" id="reg-by" required placeholder="เช่น A, B, C หรือ ชื่อผู้บันทึก" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">รหัสพนักงาน (ID)</label>
+        <input type="text" id="reg-id" required placeholder="เช่น 001" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+      </div>
+      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition">
+        บันทึกเข้าใช้งาน
+      </button>
+    </form>
+  </div>
 
-        <!-- 1. REGISTRATION CARD (Shown if no user registered) -->
-        <section id="registrationSection" class="hidden bg-white rounded-3xl p-6 shadow-xl border border-slate-200/80 my-auto">
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-                    <i data-lucide="user-plus" class="w-10 h-10"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-slate-800">ลงทะเบียนผู้ใช้งาน</h2>
-                <p class="text-slate-500 text-sm mt-1">กรุณากรอกข้อมูลครั้งแรกเพื่อเริ่มใช้งานระบบ</p>
-            </div>
-
-            <form id="registrationForm" onsubmit="handleRegistration(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">ชื่อผู้ปฏิบัติงาน / ชื่อย่อ (by)</label>
-                    <input type="text" id="regName" required placeholder="ตัวอย่าง: A, B, J, z หรือ Somchai" 
-                        class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none transition">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">รหัสประจำตัวพนักงาน (ID)</label>
-                    <input type="text" id="regId" required placeholder="ตัวอย่าง: EMP-001" 
-                        class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none transition">
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-emerald-600/30 touch-btn flex items-center justify-center space-x-2">
-                    <i data-lucide="log-in" class="w-5 h-5"></i>
-                    <span>เข้าสู่ระบบ & เริ่มใช้งาน</span>
-                </button>
-            </form>
-        </section>
-
-        <!-- 2. MAIN MENU (Shown when logged in) -->
-        <section id="menuSection" class="hidden space-y-4">
-            <!-- User Status Card -->
-            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-4 shadow-md flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center font-bold text-xl border border-white/30" id="userAvatar">
-                        ?
-                    </div>
-                    <div>
-                        <p class="text-xs text-emerald-100 uppercase tracking-wider">ผู้บันทึกข้อมูลปัจจุบัน</p>
-                        <h3 class="font-bold text-lg leading-snug" id="userNameDisplay">-</h3>
-                        <p class="text-xs text-emerald-200" id="userIdDisplay">ID: -</p>
-                    </div>
-                </div>
-                <button onclick="switchUser()" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-semibold backdrop-blur-sm transition border border-white/20 touch-btn">
-                    เปลี่ยนผู้ใช้
-                </button>
-            </div>
-
-            <div class="flex items-center justify-between pt-2">
-                <h2 class="text-base font-bold text-slate-700 uppercase tracking-wide">เลือกรายการทำกิจกรรม</h2>
-                <span class="text-xs text-slate-500">แตะเพื่อกรอกข้อมูล</span>
-            </div>
-
-            <!-- Menu Grid - Big Icons & Colors for High Accessibility -->
-            <div class="grid grid-cols-2 gap-3.5">
-                <!-- 1. ปลูก -->
-                <button onclick="openForm('ปลูก')" class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md border border-slate-200/80 flex flex-col items-center justify-center text-center touch-btn group relative overflow-hidden">
-                    <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                        <i data-lucide="sprout" class="w-9 h-9"></i>
-                    </div>
-                    <span class="text-xl font-bold text-slate-800">1. ปลูก</span>
-                    <span class="text-xs text-slate-500 mt-0.5">Planting</span>
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
-                </button>
-
-                <!-- 2. เติมปุ๋ย -->
-                <button onclick="openForm('เติมปุ๋ย')" class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md border border-slate-200/80 flex flex-col items-center justify-center text-center touch-btn group relative overflow-hidden">
-                    <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                        <i data-lucide="flask-conical" class="w-9 h-9"></i>
-                    </div>
-                    <span class="text-xl font-bold text-slate-800">2. เติมปุ๋ย</span>
-                    <span class="text-xs text-slate-500 mt-0.5">Add Fertilizer</span>
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-amber-500"></div>
-                </button>
-
-                <!-- 3. ใส่ยา -->
-                <button onclick="openForm('ใส่ยา')" class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md border border-slate-200/80 flex flex-col items-center justify-center text-center touch-btn group relative overflow-hidden">
-                    <div class="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                        <i data-lucide="pill" class="w-9 h-9"></i>
-                    </div>
-                    <span class="text-xl font-bold text-slate-800">3. ใส่ยา</span>
-                    <span class="text-xs text-slate-500 mt-0.5">Medicine/Pesticide</span>
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500"></div>
-                </button>
-
-                <!-- 4. ฉีดใบ -->
-                <button onclick="openForm('ฉีดใบ')" class="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md border border-slate-200/80 flex flex-col items-center justify-center text-center touch-btn group relative overflow-hidden">
-                    <div class="w-16 h-16 rounded-2xl bg-cyan-100 text-cyan-600 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                        <i data-lucide="shower-head" class="w-9 h-9"></i>
-                    </div>
-                    <span class="text-xl font-bold text-slate-800">4. ฉีดใบ</span>
-                    <span class="text-xs text-slate-500 mt-0.5">Foliar Spray</span>
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-cyan-500"></div>
-                </button>
-
-                <!-- 5. เก็บเกี่ยว (Full Width) -->
-                <button onclick="openForm('เก็บเกี่ยว')" class="col-span-2 bg-white rounded-2xl p-5 shadow-sm hover:shadow-md border border-slate-200/80 flex items-center justify-between px-6 touch-btn group relative overflow-hidden">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <i data-lucide="shopping-basket" class="w-9 h-9"></i>
-                        </div>
-                        <div class="text-left">
-                            <span class="text-2xl font-bold text-slate-800 block">5. เก็บเกี่ยว</span>
-                            <span class="text-xs text-slate-500">Harvesting Yield</span>
-                        </div>
-                    </div>
-                    <i data-lucide="chevron-right" class="w-6 h-6 text-slate-400"></i>
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-purple-500"></div>
-                </button>
-            </div>
-        </section>
-
-        <!-- 3. ENTRY FORM SECTION -->
-        <section id="formSection" class="hidden bg-white rounded-3xl p-5 shadow-xl border border-slate-200/80 space-y-4">
-            <!-- Form Title Header -->
-            <div class="flex items-center justify-between border-b pb-3 border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div id="formIconContainer" class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md">
-                        <i id="formIcon" data-lucide="edit" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h2 id="formTitle" class="text-2xl font-bold text-slate-800">ฟอร์มบันทึก</h2>
-                        <p class="text-xs text-slate-500">บันทึกลง Sheet 'act'</p>
-                    </div>
-                </div>
-                <button onclick="closeForm()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <!-- Dynamic Form -->
-            <form id="actForm" onsubmit="submitForm(event)" class="space-y-4">
-                
-                <!-- Fixed Auto-Filled Badge Container -->
-                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-2">
-                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i> ข้อมูลอัตโนมัติ (Auto-filled)
-                        </span>
-                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">พร้อมบันทึก</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 text-xs">
-                        <div>
-                            <span class="text-slate-400 block mb-0.5">ประเภทกิจกรรม (cate):</span>
-                            <input type="text" id="field_cate" name="cate" readonly class="font-bold text-emerald-700 bg-emerald-50/60 border border-emerald-200 px-2.5 py-1.5 rounded-xl w-full outline-none">
-                        </div>
-                        <div>
-                            <span class="text-slate-400 block mb-0.5">ผู้บันทึก (by):</span>
-                            <input type="text" id="field_by" name="by" readonly class="font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-xl w-full outline-none">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 text-xs pt-1">
-                        <div>
-                            <span class="text-slate-400 block mb-0.5">วันที่ (date):</span>
-                            <input type="text" id="field_date_short" readonly class="font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-xl w-full outline-none text-[11px]">
-                        </div>
-                        <div>
-                            <span class="text-slate-400 block mb-0.5">เวลาบันทึก (date+time):</span>
-                            <input type="text" id="field_date_display" readonly class="font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-xl w-full outline-none text-[11px]">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bed Selector (bed) -->
-                <div id="container_bed">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">แปลง / แปลงปลูก (bed) <span class="text-rose-500">*</span></label>
-                    <input type="text" id="field_bed" name="bed" required placeholder="เช่น 1A, 1B, 2C, RK1" list="bedSuggestions"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none font-medium uppercase">
-                    <datalist id="bedSuggestions">
-                        <option value="1A"><option value="1B"><option value="1C">
-                        <option value="2A"><option value="2B"><option value="2C">
-                        <option value="3A"><option value="3B"><option value="3C">
-                        <option value="RK1"><option value="RK2"><option value="RK3">
-                    </datalist>
-                </div>
-
-                <!-- Quantity (qty) -->
-                <div id="container_qty">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">จำนวน (qty) <span class="text-rose-500">*</span></label>
-                    <input type="number" step="any" id="field_qty" name="qty" required placeholder="เช่น 100, 20, 50"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none font-medium">
-                </div>
-
-                <!-- Type / Vegetable / Chemical (type) -->
-                <div id="container_type">
-                    <label id="label_type" class="block text-sm font-semibold text-slate-700 mb-1">ประเภท/ชนิด (type)</label>
-                    <input type="text" id="field_type" name="type" placeholder="เช่น สลัด, คื่นฉ่าย, เบซิล, a, d" list="typeSuggestions"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none font-medium">
-                    <datalist id="typeSuggestions">
-                        <option value="สลัด"><option value="คื่นฉ่าย"><option value="เบซิล">
-                        <option value="a"><option value="d"><option value="g">
-                    </datalist>
-                </div>
-
-                <!-- Tank No / Code (tank no) -->
-                <div id="container_tank_no" class="hidden">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">หมายเลขถัง / รหัสถัง (tank no)</label>
-                    <input type="text" id="field_tank_no" name="tank_no" placeholder="เช่น 46296-T001 หรือ 1"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none font-medium">
-                </div>
-
-                <!-- Plant Age (age) -->
-                <div id="container_age" class="hidden">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">อายุผัก/วัน (age)</label>
-                    <input type="number" id="field_age" name="age" placeholder="เช่น 11"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 text-lg outline-none font-medium">
-                </div>
-
-                <!-- Fertilizer Group (fert_bef, fert_aft, ph, level_bef, level_aft) -->
-                <div id="container_fertilizer_group" class="hidden space-y-3 pt-2 border-t border-slate-100">
-                    <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block">ค่าปุ๋ยและค่าน้ำ (Fertilizer & Water Data)</span>
-                    
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">ค่าปุ๋ยก่อน (fert_bef)</label>
-                            <input type="number" step="any" id="field_fert_bef" name="fert_bef" placeholder="66"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-base outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">ค่าปุ๋ยหลัง (fert_aft)</label>
-                            <input type="number" step="any" id="field_fert_aft" name="fert_aft" placeholder="80"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-base outline-none">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">ค่ากรดด่าง (ph)</label>
-                        <input type="number" step="any" id="field_ph" name="ph" placeholder="5 หรือ 6.5"
-                            class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-base outline-none">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">ระดับน้ำก่อน (level_bef)</label>
-                            <input type="number" step="any" id="field_level_bef" name="level_bef" placeholder="230"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-base outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">ระดับน้ำหลัง (level_aft)</label>
-                            <input type="number" step="any" id="field_level_aft" name="level_aft" placeholder="250"
-                                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-base outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="pt-3">
-                    <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-emerald-600/30 touch-btn flex items-center justify-center space-x-2">
-                        <i data-lucide="save" class="w-6 h-6"></i>
-                        <span>บันทึกข้อมูล</span>
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- 4. HISTORY MODAL / VIEW -->
-        <section id="historySection" class="hidden space-y-4">
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
-                    <i data-lucide="history" class="w-6 h-6 text-emerald-600"></i>
-                    <span>ประวัติบันทึกข้อมูล</span>
-                </h2>
-                <div class="flex space-x-2">
-                    <button onclick="exportCSV()" class="px-3 py-1.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-xl text-xs font-bold flex items-center space-x-1 touch-btn">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                        <span>ส่งออก CSV</span>
-                    </button>
-                    <button onclick="closeHistory()" class="p-1.5 rounded-xl bg-slate-200 text-slate-700 touch-btn">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div id="historyList" class="space-y-2.5 max-h-[70vh] overflow-y-auto pr-1">
-                <!-- Data Items generated via JS -->
-            </div>
-        </section>
-
-    </main>
-
-    <!-- SETTINGS & GOOGLE APPS SCRIPT SETUP MODAL -->
-    <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
-            <div class="flex items-center justify-between border-b pb-3">
-                <h3 class="text-lg font-bold text-slate-800 flex items-center space-x-2">
-                    <i data-lucide="settings" class="w-5 h-5 text-emerald-600"></i>
-                    <span>ตั้งค่าการเชื่อมต่อ Google Sheet</span>
-                </h3>
-                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-
-            <div class="space-y-3">
-                <label class="block text-sm font-semibold text-slate-700">Google Apps Script Web App URL</label>
-                <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec"
-                    class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
-                <p class="text-xs text-slate-500">หากไม่ได้ระบุ ระบบจะบันทึกข้อมูลไว้ในเครื่อง (Local Memory) อัตโนมัติ</p>
-                
-                <button onclick="saveScriptUrl()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm touch-btn">
-                    บันทึกลิงก์เชื่อมต่อ
-                </button>
-            </div>
-
-            <div class="border-t pt-4 space-y-2">
-                <h4 class="text-sm font-bold text-slate-800">คำแนะนำการเชื่อมต่อ Google Sheet:</h4>
-                <ol class="text-xs text-slate-600 space-y-1.5 list-decimal pl-4">
-                    <li>เปิด Google Sheet ชื่อ <b>act</b> ของคุณ</li>
-                    <li>ไปที่ <b>ส่วนขยาย (Extensions)</b> &gt; <b>Apps Script</b></li>
-                    <li>วางโค้ดด้านล่างนี้ลงไป แล้วกด <b>บันทึก (Save)</b></li>
-                    <li>กด <b>ทำให้ใช้งานได้ (Deploy)</b> &gt; <b>การทำให้ใช้งานได้ใหม่ (New deployment)</b></li>
-                    <li>เลือกประเภทเป็น <b>เว็บแอป (Web App)</b> และตั้งค่า <b>"ใครก็ได้ (Anyone)"</b> เข้าถึงได้</li>
-                    <li>คัดลอก URL นำมาวางในช่องด้านบน</li>
-                </ol>
-
-                <div class="relative mt-2">
-                    <pre class="bg-slate-900 text-emerald-400 text-[11px] p-3 rounded-xl overflow-x-auto font-mono max-h-40">
-function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("act");
-  var data = JSON.parse(e.postData.contents);
-  
-  sheet.appendRow([
-    data.date_formatted,  // A: date (DD/MM/YYYY)
-    data.date_full,       // B: date (DD/MM/YYYY HH:mm)
-    data.cate,            // C: cate
-    data.by,              // D: by
-    data.bed,             // E: bed
-    data.qty,             // F: qty
-    data.type || "",      // G: type
-    data.tank_no || "",   // H: tank no
-    data.age || "",       // I: age
-    data.fert_bef || "",  // J: fert_bef
-    data.fert_aft || "",  // K: fert_aft
-    data.ph || "",        // L: ph
-    data.level_bef || "", // M: level_bef
-    data.level_aft || ""  // N: level_aft
-  ]);
-  
-  return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
-    .setMimeType(ContentService.MimeType.JSON);
-}</pre>
-                    <button onclick="copyAppsScriptCode()" class="absolute top-2 right-2 px-2 py-1 bg-white/20 text-white hover:bg-white/30 rounded text-[10px] font-semibold">
-                        คัดลอกโค้ด
-                    </button>
-                </div>
-            </div>
-        </div>
+  <!-- Main Dashboard Menu View -->
+  <div id="menu-view" class="max-w-md mx-auto p-4 hidden space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+      <div>
+        <div class="text-xs text-gray-400 font-bold uppercase">ผู้ใช้งานปัจจุบัน</div>
+        <div class="text-lg font-bold text-emerald-700" id="user-display">--</div>
+      </div>
+      <div class="text-right">
+        <div class="text-xs text-gray-400 font-bold">วันที่</div>
+        <div class="text-sm font-medium" id="date-display">--/--/----</div>
+      </div>
     </div>
 
-    <!-- Toast Feedback Notification -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-2 text-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
-        <i id="toastIcon" data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
-        <span id="toastMsg">บันทึกเรียบร้อย</span>
+    <h3 class="text-lg font-bold text-slate-700 px-1">เลือกรายการทำงาน</h3>
+
+    <div class="grid grid-cols-1 gap-4">
+      <button onclick="openForm('ปลูก', 'sprout', 'bg-emerald-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-emerald-500 hover:bg-emerald-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-emerald-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">🌱</div>
+        <div>
+          <div class="text-2xl font-extrabold text-slate-800">1) ปลูก</div>
+          <div class="text-xs text-slate-500">บันทึกการลงแปลงปลูกผัก</div>
+        </div>
+      </button>
+
+      <button onclick="openForm('เติมปุ๋ย', 'flask', 'bg-blue-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-blue-500 hover:bg-blue-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-blue-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">🧪</div>
+        <div>
+          <div class="text-2xl font-extrabold text-slate-800">2) เติมปุ๋ย</div>
+          <div class="text-xs text-slate-500">บันทึกค่าวัดและปริมาณปุ๋ย</div>
+        </div>
+      </button>
+
+      <button onclick="openForm('ใส่ยา', 'tablets', 'bg-purple-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-purple-500 hover:bg-purple-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-purple-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">💊</div>
+        <div>
+          <div class="text-2xl font-extrabold text-slate-800">3) ใส่ยา</div>
+          <div class="text-xs text-slate-500">บันทึกการใส่ยาและอายุด้านแปลง</div>
+        </div>
+      </button>
+
+      <button onclick="openForm('ฉีดใบ', 'spray-can', 'bg-amber-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-amber-500 hover:bg-amber-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-amber-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">🚿</div>
+        <div>
+          <div class="text-2xl font-extrabold text-slate-800">4) ฉีดใบ</div>
+          <div class="text-xs text-slate-500">บันทึกการฉีดทางใบ</div>
+        </div>
+      </button>
+
+      <button onclick="openForm('เก็บเกี่ยว', 'basket-shopping', 'bg-rose-500')" class="bg-white p-5 rounded-2xl shadow-md border-2 border-rose-500 hover:bg-rose-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-rose-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm shrink-0">🧺</div>
+        <div>
+          <div class="text-2xl font-extrabold text-slate-800">5) เก็บเกี่ยว</div>
+          <div class="text-xs text-slate-500">บันทึกจำนวนผลผลิตที่เก็บเกี่ยว</div>
+        </div>
+      </button>
     </div>
+  </div>
 
-    <!-- Application Logic -->
-    <script>
-        // State Variables
-        let currentUser = null;
-        let records = [];
-        let scriptUrl = '';
+  <!-- Dynamic Form View -->
+  <div id="form-view" class="max-w-md mx-auto p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200">
+      
+      <!-- Form Header -->
+      <div id="form-header" class="p-4 text-white flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <span id="form-icon-container" class="text-2xl"></span>
+          <h2 id="form-title" class="text-2xl font-bold">--</h2>
+        </div>
+        <button onclick="showMenuView()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-sm font-bold">
+          ✕ ปิด
+        </button>
+      </div>
 
-        // Category Configurations matching requested fields & icons
-        const categoryConfigs = {
-            'ปลูก': {
-                icon: 'sprout',
-                colorBg: 'bg-emerald-600',
-                typeLabel: 'ผักที่ปลูก (type)',
-                typePlaceholder: 'เช่น สลัด, คื่นฉ่าย, เบซิล',
-                fields: ['bed', 'qty', 'type', 'tank_no']
-            },
-            'เติมปุ๋ย': {
-                icon: 'flask-conical',
-                colorBg: 'bg-amber-600',
-                typeLabel: 'ประเภทปุ๋ย (type)',
-                typePlaceholder: 'เช่น a, d, g',
-                fields: ['bed', 'qty', 'type', 'fertilizer_group']
-            },
-            'ใส่ยา': {
-                icon: 'pill',
-                colorBg: 'bg-rose-600',
-                typeLabel: 'ชนิดยา (type)',
-                typePlaceholder: 'เช่น d, a, g',
-                fields: ['bed', 'qty', 'type', 'tank_no', 'age']
-            },
-            'ฉีดใบ': {
-                icon: 'shower-head',
-                colorBg: 'bg-cyan-600',
-                typeLabel: 'สูตรฉีดใบ (type)',
-                typePlaceholder: 'เช่น g, a',
-                fields: ['bed', 'qty', 'type', 'tank_no']
-            },
-            'เก็บเกี่ยว': {
-                icon: 'shopping-basket',
-                colorBg: 'bg-purple-600',
-                typeLabel: 'ชนิดผักที่เก็บ (type)',
-                typePlaceholder: 'เช่น สลัด, คื่นฉ่าย, เบซิล',
-                fields: ['bed', 'qty', 'type']
-            }
-        };
+      <!-- Auto-filled / Editable Metadata Box -->
+      <div class="bg-slate-50 p-4 border-b text-xs grid grid-cols-2 gap-2 text-slate-600 items-center">
+        <div>
+          <strong class="text-slate-800 block mb-1">วันที่ (date - แก้ไขได้):</strong> 
+          <input type="date" id="input-date" class="p-1 border rounded bg-white text-xs font-bold text-emerald-700 w-full focus:ring-1 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+        <div>
+          <strong class="text-slate-800 block mb-1">เวลา (datetime):</strong> 
+          <span id="auto-datetime" class="font-medium text-slate-700">--</span>
+        </div>
+        <div><strong class="text-slate-800">ประเภท (cate):</strong> <span id="auto-cate" class="font-bold text-emerald-600">--</span></div>
+        <div><strong class="text-slate-800">ผู้บันทึก (by):</strong> <span id="auto-by" class="font-bold text-emerald-600">--</span></div>
+      </div>
 
-        // Initialize App on Page Load
-        window.onload = function() {
-            lucide.createIcons();
-            loadUserData();
-            loadRecords();
-            loadSettings();
-        };
+      <!-- Dynamic Form Inputs -->
+      <form onsubmit="handleFormSubmit(event)" class="p-4 space-y-4">
+        <div id="field-bed" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">แปลง (bed)</label>
+          <input type="text" id="input-bed" placeholder="เช่น 1A, 1B, 2C" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
 
-        // Load Saved User or Show Registration
-        function loadUserData() {
-            const savedUser = localStorage.getItem('veggie_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainMenu();
-            } else {
-                showRegistration();
-            }
+        <div id="field-qty" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">จำนวน (qty)</label>
+          <input type="number" step="any" id="input-qty" placeholder="เช่น 20, 50, 100" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div id="field-type" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">ประเภท/ชนิด (type)</label>
+          <input type="text" id="input-type" placeholder="เช่น สลัด, คื่นฉ่าย, a, d" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div id="field-tank_no" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">ถัง/เลขถัง (tank no)</label>
+          <input type="text" id="input-tank_no" placeholder="เช่น 1, 46296-T001" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div id="field-age" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">อายุ (age)</label>
+          <input type="number" id="input-age" placeholder="เช่น 11" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div id="field-fert" class="form-field grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ปุ๋ยก่อน (fert_bef)</label>
+            <input type="number" step="any" id="input-fert_bef" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ปุ๋ยหลัง (fert_aft)</label>
+            <input type="number" step="any" id="input-fert_aft" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          </div>
+        </div>
+
+        <div id="field-ph" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">pH</label>
+          <input type="number" step="0.1" id="input-ph" placeholder="เช่น 5.5, 6.0" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div id="field-level" class="form-field grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ระดับก่อน (level_bef)</label>
+            <input type="number" step="any" id="input-level_bef" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ระดับหลัง (level_aft)</label>
+            <input type="number" step="any" id="input-level_aft" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition text-lg mt-4">
+          บันทึกข้อมูล
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-xl font-bold text-slate-800">ตั้งค่าระบบ (Settings)</h3>
+        <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">Google Apps Script Web App URL</label>
+          <input type="url" id="setting-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-3 border rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">เปลี่ยนรหัสผ่านตั้งค่า (Admin Password)</label>
+          <input type="password" id="setting-password" placeholder="ใส่รหัสผ่านใหม่ที่นี่" class="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+      </div>
+
+      <div class="pt-4 flex space-x-2">
+        <button onclick="saveSettings()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl">
+          บันทึก
+        </button>
+        <button onclick="closeSettingsModal()" class="bg-gray-200 hover:bg-gray-300 text-slate-700 font-bold px-5 py-3 rounded-xl">
+          ยกเลิก
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeCategory = '';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      updateDateDisplay();
+    });
+
+    function getAdminPassword() {
+      return localStorage.getItem('farm_admin_password') || '1234';
+    }
+
+    function openSettingsWithPassword() {
+      const currentPassword = getAdminPassword();
+      const userInput = prompt('กรุณากรอกรหัสผ่านเพื่อเข้าสู่หน้าตั้งค่า (Default: 1234):');
+      
+      if (userInput === null) return;
+
+      if (userInput === currentPassword) {
+        document.getElementById('setting-url').value = localStorage.getItem('farm_script_url') || '';
+        document.getElementById('setting-password').value = currentPassword;
+        document.getElementById('settings-modal').classList.remove('hidden');
+      } else {
+        alert('รหัสผ่านไม่ถูกต้อง (Incorrect Password)');
+      }
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.add('hidden');
+    }
+
+    function saveSettings() {
+      const url = document.getElementById('setting-url').value.trim();
+      const newPassword = document.getElementById('setting-password').value.trim();
+
+      if (url) localStorage.setItem('farm_script_url', url);
+      if (newPassword) localStorage.setItem('farm_admin_password', newPassword);
+
+      alert('บันทึกการตั้งค่าเรียบร้อยแล้ว');
+      closeSettingsModal();
+    }
+
+    function checkAuth() {
+      const userBy = localStorage.getItem('farm_user_by');
+      if (userBy) {
+        document.getElementById('auth-view').classList.add('hidden');
+        document.getElementById('menu-view').classList.remove('hidden');
+        document.getElementById('user-display').innerText = userBy;
+      } else {
+        document.getElementById('auth-view').classList.remove('hidden');
+        document.getElementById('menu-view').classList.add('hidden');
+      }
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const byVal = document.getElementById('reg-by').value.trim();
+      const idVal = document.getElementById('reg-id').value.trim();
+
+      if (byVal && idVal) {
+        localStorage.setItem('farm_user_by', byVal);
+        localStorage.setItem('farm_user_id', idVal);
+        checkAuth();
+      }
+    }
+
+    function logout() {
+      if (confirm('คุณต้องการเปลี่ยนผู้ใช้งานใช่หรือไม่?')) {
+        localStorage.removeItem('farm_user_by');
+        localStorage.removeItem('farm_user_id');
+        checkAuth();
+      }
+    }
+
+    function updateDateDisplay() {
+      const now = new Date();
+      document.getElementById('date-display').innerText = formatDateToDisplay(now);
+    }
+
+    function formatDateToDisplay(d) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    function formatDateTime(d) {
+      const datePart = formatDateToDisplay(d);
+      const hrs = String(d.getHours()).padStart(2, '0');
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      return `${datePart} ${hrs}:${mins}`;
+    }
+
+    function openForm(cate, icon, bgClass) {
+      activeCategory = cate;
+      const now = new Date();
+      const userBy = localStorage.getItem('farm_user_by') || '';
+
+      // Set input-date value to YYYY-MM-DD format for HTML date picker
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      document.getElementById('input-date').value = `${yyyy}-${mm}-${dd}`;
+
+      document.getElementById('auto-datetime').innerText = formatDateTime(now);
+      document.getElementById('auto-cate').innerText = cate;
+      document.getElementById('auto-by').innerText = userBy;
+
+      const header = document.getElementById('form-header');
+      header.className = `p-4 text-white flex justify-between items-center ${bgClass}`;
+      document.getElementById('form-title').innerText = cate;
+
+      const emojiMap = { 'ปลูก': '🌱', 'เติมปุ๋ย': '🧪', 'ใส่ยา': '💊', 'ฉีดใบ': '🚿', 'เก็บเกี่ยว': '🧺' };
+      document.getElementById('form-icon-container').innerText = emojiMap[cate] || '📝';
+
+      document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
+
+      if (cate === 'ปลูก') {
+        showFields(['bed', 'qty', 'type', 'tank_no']);
+      } else if (cate === 'เติมปุ๋ย') {
+        showFields(['bed', 'qty', 'type', 'fert', 'ph', 'level']);
+      } else if (cate === 'ใส่ยา') {
+        showFields(['bed', 'qty', 'type', 'tank_no', 'age']);
+      } else if (cate === 'ฉีดใบ') {
+        showFields(['bed', 'qty', 'type', 'tank_no']);
+      } else if (cate === 'เก็บเกี่ยว') {
+        showFields(['bed', 'qty', 'type']);
+      }
+
+      document.getElementById('menu-view').classList.add('hidden');
+      document.getElementById('form-view').classList.remove('hidden');
+    }
+
+    function showFields(fieldIds) {
+      fieldIds.forEach(id => {
+        const el = document.getElementById(`field-${id}`);
+        if (el) el.classList.remove('hidden');
+      });
+    }
+
+    function showMenuView() {
+      document.getElementById('form-view').classList.add('hidden');
+      document.getElementById('menu-view').classList.remove('hidden');
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'กำลังบันทึก...';
+
+      const now = new Date();
+      const userBy = localStorage.getItem('farm_user_by') || '';
+
+      // Get selected date from picker (YYYY-MM-DD) and convert to DD/MM/YYYY
+      const rawDateVal = document.getElementById('input-date').value;
+      let formattedDate = formatDateToDisplay(now);
+      if (rawDateVal) {
+        const parts = rawDateVal.split('-'); // [YYYY, MM, DD]
+        if (parts.length === 3) {
+          formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
+      }
 
-        function showRegistration() {
-            document.getElementById('registrationSection').classList.remove('hidden');
-            document.getElementById('menuSection').classList.add('hidden');
-            document.getElementById('formSection').classList.add('hidden');
-            document.getElementById('historySection').classList.add('hidden');
-            document.getElementById('headerWorkerBadge').innerText = 'ยังไม่ได้ลงทะเบียน';
+      const payload = {
+        date: formattedDate,
+        datetime: formatDateTime(now),
+        cate: activeCategory,
+        by: userBy,
+        bed: document.getElementById('input-bed')?.value || '',
+        qty: document.getElementById('input-qty')?.value || '',
+        type: document.getElementById('input-type')?.value || '',
+        tank_no: document.getElementById('input-tank_no')?.value || '',
+        age: document.getElementById('input-age')?.value || '',
+        fert_bef: document.getElementById('input-fert_bef')?.value || '',
+        fert_aft: document.getElementById('input-fert_aft')?.value || '',
+        ph: document.getElementById('input-ph')?.value || '',
+        level_bef: document.getElementById('input-level_bef')?.value || '',
+        level_aft: document.getElementById('input-level_aft')?.value || ''
+      };
+
+      const scriptUrl = localStorage.getItem('farm_script_url');
+
+      if (scriptUrl) {
+        try {
+          await fetch(scriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          alert('บันทึกข้อมูลเรียบร้อยแล้ว!');
+          clearFormInputs();
+          showMenuView();
+        } catch (err) {
+          alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err.message);
         }
+      } else {
+        alert('บันทึกข้อมูลในเครื่องเรียบร้อย (ยังไม่ได้ตั้งค่า Google Apps Script URL)');
+        clearFormInputs();
+        showMenuView();
+      }
 
-        function handleRegistration(e) {
-            e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const id = document.getElementById('regId').value.trim();
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'บันทึกข้อมูล';
+    }
 
-            if (!name || !id) return;
-
-            currentUser = { name: name, id: id };
-            localStorage.setItem('veggie_user', JSON.stringify(currentUser));
-            showToast('ลงทะเบียนเรียบร้อยแล้ว!', 'success');
-            showMainMenu();
-        }
-
-        function showMainMenu() {
-            document.getElementById('registrationSection').classList.add('hidden');
-            document.getElementById('menuSection').classList.remove('hidden');
-            document.getElementById('formSection').classList.add('hidden');
-            document.getElementById('historySection').classList.add('hidden');
-
-            document.getElementById('userNameDisplay').innerText = currentUser.name;
-            document.getElementById('userIdDisplay').innerText = `ID: ${currentUser.id}`;
-            document.getElementById('userAvatar').innerText = currentUser.name.charAt(0).toUpperCase();
-            document.getElementById('headerWorkerBadge').innerText = `ผู้ใช้: ${currentUser.name}`;
-        }
-
-        function switchUser() {
-            if (confirm('คุณต้องการเปลี่ยนผู้ใช้งานใช่หรือไม่?')) {
-                localStorage.removeItem('veggie_user');
-                currentUser = null;
-                showRegistration();
-            }
-        }
-
-        // Form Control
-        function openForm(category) {
-            const config = categoryConfigs[category];
-            if (!config) return;
-
-            // Auto-fill category (cate) and worker (by)
-            document.getElementById('field_cate').value = category;
-            document.getElementById('formTitle').innerText = category;
-            document.getElementById('field_by').value = currentUser ? currentUser.name : '';
-
-            // Update Header Icon & Colors
-            const iconContainer = document.getElementById('formIconContainer');
-            iconContainer.className = `w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-md ${config.colorBg}`;
-            document.getElementById('formIcon').setAttribute('data-lucide', config.icon);
-
-            // Update Dynamic Labels
-            document.getElementById('label_type').innerText = config.typeLabel;
-            document.getElementById('field_type').placeholder = config.typePlaceholder;
-
-            // Auto-fill dates
-            const now = new Date();
-            document.getElementById('field_date_short').value = formatDateShort(now);
-            document.getElementById('field_date_display').value = formatDateFull(now);
-
-            // Toggle Field Visibility Based on Category Config
-            ['tank_no', 'age', 'fertilizer_group'].forEach(fieldId => {
-                const container = document.getElementById(`container_${fieldId}`);
-                if (config.fields.includes(fieldId)) {
-                    container.classList.remove('hidden');
-                } else {
-                    container.classList.add('hidden');
-                }
-            });
-
-            // Show Form Section
-            document.getElementById('menuSection').classList.add('hidden');
-            document.getElementById('formSection').classList.remove('hidden');
-            document.getElementById('historySection').classList.add('hidden');
-
-            lucide.createIcons();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function closeForm() {
-            document.getElementById('actForm').reset();
-            showMainMenu();
-        }
-
-        // Submit Form Handler
-        async function submitForm(e) {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-50');
-
-            const now = new Date();
-            const record = {
-                id: Date.now(),
-                date_formatted: formatDateShort(now), // A: date (01/10/2026)
-                date_full: formatDateFull(now),       // B: date (01/10/2026 10:16)
-                cate: document.getElementById('field_cate').value,
-                by: currentUser ? currentUser.name : document.getElementById('field_by').value,
-                bed: document.getElementById('field_bed').value.toUpperCase().trim(),
-                qty: document.getElementById('field_qty').value,
-                type: document.getElementById('field_type').value.trim(),
-                tank_no: document.getElementById('field_tank_no').value.trim(),
-                age: document.getElementById('field_age').value,
-                fert_bef: document.getElementById('field_fert_bef').value,
-                fert_aft: document.getElementById('field_fert_aft').value,
-                ph: document.getElementById('field_ph').value,
-                level_bef: document.getElementById('field_level_bef').value,
-                level_aft: document.getElementById('field_level_aft').value,
-                synced: false
-            };
-
-            // Save to Local Records
-            records.unshift(record);
-            saveRecords();
-
-            // Try Sync to Google Sheets if Script URL exists
-            if (scriptUrl) {
-                try {
-                    showToast('กำลังส่งข้อมูลไปยัง Google Sheet...', 'info');
-                    await fetch(scriptUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(record)
-                    });
-                    record.synced = true;
-                    saveRecords();
-                    showToast('บันทึกข้อมูลลง Google Sheet เรียบร้อย!', 'success');
-                } catch (err) {
-                    console.error('Sheet Sync Error:', err);
-                    showToast('บันทึกในเครื่องเรียบร้อย (ส่งไปยัง Sheet ไม่สำเร็จ)', 'warning');
-                }
-            } else {
-                showToast('บันทึกในเครื่องเรียบร้อยแล้ว!', 'success');
-            }
-
-            submitBtn.disabled = false;
-            submitBtn.classList.remove('opacity-50');
-            document.getElementById('actForm').reset();
-            showMainMenu();
-        }
-
-        // Local Storage Records Management
-        function saveRecords() {
-            localStorage.setItem('veggie_act_records', JSON.stringify(records));
-            updateHistoryBadge();
-        }
-
-        function loadRecords() {
-            const saved = localStorage.getItem('veggie_act_records');
-            if (saved) {
-                records = JSON.parse(saved);
-            }
-            updateHistoryBadge();
-        }
-
-        function updateHistoryBadge() {
-            const badge = document.getElementById('historyBadge');
-            if (records.length > 0) {
-                badge.innerText = records.length;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        function showHistory() {
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-
-            if (records.length === 0) {
-                historyList.innerHTML = `
-                    <div class="text-center py-10 text-slate-400">
-                        <i data-lucide="clipboard-x" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
-                        <p>ยังไม่มีประวัติการบันทึกข้อมูล</p>
-                    </div>`;
-            } else {
-                records.forEach((rec, idx) => {
-                    const item = document.createElement('div');
-                    item.className = 'bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-1.5';
-                    item.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-slate-800 text-sm px-2.5 py-0.5 rounded-lg bg-slate-100">${rec.cate}</span>
-                            <span class="text-xs text-slate-400">${rec.date_full}</span>
-                        </div>
-                        <div class="text-xs text-slate-600 grid grid-cols-2 gap-1 pt-1">
-                            <div><span class="text-slate-400">แปลง (bed):</span> <b>${rec.bed}</b></div>
-                            <div><span class="text-slate-400">จำนวน (qty):</span> <b>${rec.qty}</b></div>
-                            <div><span class="text-slate-400">ผู้บันทึก (by):</span> <b>${rec.by}</b></div>
-                            <div><span class="text-slate-400">ชนิด (type):</span> <b>${rec.type || '-'}</b></div>
-                        </div>
-                    `;
-                    historyList.appendChild(item);
-                });
-            }
-
-            document.getElementById('menuSection').classList.add('hidden');
-            document.getElementById('formSection').classList.add('hidden');
-            document.getElementById('historySection').classList.remove('hidden');
-            lucide.createIcons();
-        }
-
-        function closeHistory() {
-            showMainMenu();
-        }
-
-        // CSV Export Helper
-        function exportCSV() {
-            if (records.length === 0) {
-                showToast('ไม่มีข้อมูลสำหรับส่งออก', 'warning');
-                return;
-            }
-
-            const headers = ['date', 'date_full', 'cate', 'by', 'bed', 'qty', 'type', 'tank no', 'age', 'fert_bef', 'fert_aft', 'ph', 'level_bef', 'level_aft'];
-            let csvContent = '\uFEFF' + headers.join(',') + '\n';
-
-            records.forEach(r => {
-                const row = [
-                    `"${r.date_formatted}"`,
-                    `"${r.date_full}"`,
-                    `"${r.cate}"`,
-                    `"${r.by}"`,
-                    `"${r.bed}"`,
-                    `"${r.qty}"`,
-                    `"${r.type || ''}"`,
-                    `"${r.tank_no || ''}"`,
-                    `"${r.age || ''}"`,
-                    `"${r.fert_bef || ''}"`,
-                    `"${r.fert_aft || ''}"`,
-                    `"${r.ph || ''}"`,
-                    `"${r.level_bef || ''}"`,
-                    `"${r.level_aft || ''}"`
-                ];
-                csvContent += row.join(',') + '\n';
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', `act_farm_records_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Settings Modal
-        function openSettingsModal() {
-            document.getElementById('scriptUrlInput').value = scriptUrl;
-            document.getElementById('settingsModal').classList.remove('hidden');
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
-
-        function saveScriptUrl() {
-            const url = document.getElementById('scriptUrlInput').value.trim();
-            scriptUrl = url;
-            localStorage.setItem('veggie_script_url', url);
-            showToast('บันทึกตั้งค่า Google Script เรียบร้อย', 'success');
-            closeSettingsModal();
-        }
-
-        function loadSettings() {
-            const savedUrl = localStorage.getItem('veggie_script_url');
-            if (savedUrl) {
-                scriptUrl = savedUrl;
-            }
-        }
-
-        function copyAppsScriptCode() {
-            const code = `function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("act");
-  var data = JSON.parse(e.postData.contents);
-  
-  sheet.appendRow([
-    data.date_formatted,  
-    data.date_full,       
-    data.cate,            
-    data.by,              
-    data.bed,             
-    data.qty,             
-    data.type || "",      
-    data.tank_no || "",   
-    data.age || "",       
-    data.fert_bef || "",  
-    data.fert_aft || "",  
-    data.ph || "",        
-    data.level_bef || "", 
-    data.level_aft || ""  
-  ]);
-  
-  return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
-    .setMimeType(ContentService.MimeType.JSON);
-}`;
-            
-            // Clipboard fallback
-            const dummy = document.createElement("textarea");
-            document.body.appendChild(dummy);
-            dummy.value = code;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-            showToast('คัดลอกโค้ดแล้ว!', 'success');
-        }
-
-        // Helper Date Formatters
-        function formatDateShort(dateObj) {
-            const dd = String(dateObj.getDate()).padStart(2, '0');
-            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const yyyy = dateObj.getFullYear();
-            return `${dd}/${mm}/${yyyy}`;
-        }
-
-        function formatDateFull(dateObj) {
-            const shortDate = formatDateShort(dateObj);
-            const hh = String(dateObj.getHours()).padStart(2, '0');
-            const min = String(dateObj.getMinutes()).padStart(2, '0');
-            return `${shortDate} ${hh}:${min}`;
-        }
-
-        // Toast Feedback UI
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.innerText = message;
-            
-            if (type === 'success') {
-                toastIcon.setAttribute('data-lucide', 'check-circle');
-                toastIcon.className = 'w-5 h-5 text-emerald-400';
-            } else if (type === 'warning') {
-                toastIcon.setAttribute('data-lucide', 'alert-triangle');
-                toastIcon.className = 'w-5 h-5 text-amber-400';
-            } else {
-                toastIcon.setAttribute('data-lucide', 'info');
-                toastIcon.className = 'w-5 h-5 text-cyan-400';
-            }
-
-            lucide.createIcons();
-
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            toast.classList.add('opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 3000);
-        }
-    </script>
+    function clearFormInputs() {
+      document.querySelectorAll('#form-view input:not([type="date"])').forEach(i => i.value = '');
+    }
+  </script>
 </body>
 </html>
