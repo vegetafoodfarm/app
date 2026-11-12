@@ -9,12 +9,16 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans pb-10">
 
+
+
   <!-- Header -->
   <header class="bg-emerald-600 text-white p-2 shadow-md flex justify-between items-center sticky top-0 z-40">
+
     <div class="flex items-center space-x-2">
       <i class="fa-solid fa-seedling text-2xl"></i>
       <h1 class="text-lg font-bold">เขาเขียวฟาร์มผัก</h1>
     </div>
+
     <div class="flex items-center space-x-1">
       <button onclick="openSettingsWithPassword()" class="p-2 text-white hover:bg-emerald-700 rounded-full transition" title="ตั้งค่า">
         <i class="fa-solid fa-gear text-xl"></i>
@@ -24,6 +28,8 @@
       </button>
     </div>
   </header>
+
+
 
   <!-- Registration / Login View -->
   <div id="auth-view" class="max-w-md mx-auto m-6 p-6 bg-white rounded-2xl shadow-lg">
@@ -49,10 +55,16 @@
     </form>
   </div>
 
+
+
+
   <!-- Main Dashboard Menu View (1-Column Vertical List) -->
   <div id="menu-view" class="max-w-md mx-auto p-4 hidden space-y-1">
-    <!-- User info banner -->
-    <div class="bg-emerald-600 text-white p-4 rounded-2xl shadow-md flex justify-between items-center">
+   
+
+  <!-- User info banner -->
+
+    <div class="bg-emerald-600 text-white p-2 rounded-xl shadow-md flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <div class="bg-white/20 p-1 rounded-xl text-2xl">🌱</div>
         <div>
@@ -70,6 +82,9 @@
 
     <!-- 5 Big Vertical Stacked Cards -->
     <div class="grid grid-cols-1 gap-1">
+
+
+
 
       <!-- 1) ปลูก -->
       <button onclick="openForm('ปลูก', 'sprout', 'bg-emerald-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-emerald-500 hover:bg-emerald-50 text-left flex items-center space-x-4 active:scale-98 transition">
@@ -93,36 +108,38 @@
         </div>
       </button>
 
-      <!-- 3) ใส่ยา -->
-      <button onclick="openForm('ใส่ยา', 'tablets', 'bg-purple-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-purple-500 hover:bg-purple-50 text-left flex items-center space-x-4 active:scale-98 transition">
-        <div class="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
-          💊
-        </div>
-        <div>
-          <div class="text-xl font-extrabold text-slate-800">3) ใส่ยา</div>
-          <div class="text-xs text-slate-500">บันทึกการใส่ยาและอายุด้านแปลง</div>
-        </div>
-      </button>
-
-      <!-- 4) ฉีดใบ -->
-      <button onclick="openForm('ฉีดใบ', 'spray-can', 'bg-amber-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-amber-500 hover:bg-amber-50 text-left flex items-center space-x-4 active:scale-98 transition">
+      <!-- 3) พ่นปุ๋ย -->
+      <button onclick="openForm('พ่นปุ๋ย', 'spray-can', 'bg-amber-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-amber-500 hover:bg-amber-50 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-amber-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           🚿
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">4) ฉีดใบ</div>
-          <div class="text-xs text-slate-500">บันทึกการฉีดทางใบ</div>
+          <div class="text-xl font-extrabold text-slate-800">3) พ่นปุ๋ย</div>
+          <div class="text-xs text-slate-500">บันทึกการพ่นปุ๋ย</div>
         </div>
       </button>
 
-      <!-- 5) เก็บเกี่ยว -->
-      <button onclick="openForm('เก็บเกี่ยว', 'basket-shopping', 'bg-rose-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-rose-500 hover:bg-rose-50 text-left flex items-center space-x-4 active:scale-98 transition">
+      <!-- 4) พ่นยา -->
+      <button onclick="openForm('พ่นยา', 'tablets', 'bg-purple-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-purple-500 hover:bg-purple-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
+          💊
+        </div>
+        <div>
+          <div class="text-xl font-extrabold text-slate-800">4) พ่นยา</div>
+          <div class="text-xs text-slate-500">บันทึกการพ่นยา</div>
+        </div>
+      </button>
+
+
+
+      <!-- 5) ย้าย / เก็บเกี่ยว -->
+      <button onclick="openForm('ย้าย / เก็บเกี่ยว', 'basket-shopping', 'bg-rose-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-rose-500 hover:bg-rose-10 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-rose-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           🧺
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">5) เก็บเกี่ยว</div>
-          <div class="text-xs text-slate-500">บันทึกจำนวนผลผลิตที่เก็บเกี่ยว</div>
+          <div class="text-xl font-extrabold text-slate-800">5) ย้าย / เก็บเกี่ยว</div>
+          <div class="text-xs text-slate-500">บันทึกจำนวนผลผลิตที่ย้าย / เก็บเกี่ยว</div>
         </div>
       </button>
 
@@ -130,19 +147,23 @@
   </div>
 
   <!-- Dynamic Form View -->
-  <div id="form-view" class="max-w-md mx-auto p-4 hidden">
+  <div id="form-view" class="max-w-md mx-auto p-2 hidden">
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200">
       
+
       <!-- Form Header -->
-      <div id="form-header" class="p-4 text-white flex justify-between items-center">
-        <div class="flex items-center space-x-3">
+      <div id="form-header" class="p-2 text-white flex justify-between items-center">
+        <div class="flex items-center space-x-1">
           <span id="form-icon-container" class="text-2xl"></span>
           <h2 id="form-title" class="text-2xl font-bold">--</h2>
         </div>
+
         <button onclick="showMenuView()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-sm font-bold">
           ✕ ปิด
         </button>
       </div>
+
+
 
       <!-- Auto-filled / Editable Metadata Box-->
       <div class="bg-slate-50 p-4 border-b text-xs grid grid-cols-2 gap-2 text-slate-600 items-center">
@@ -152,7 +173,7 @@
         </div>
          
       
-         <div> <strong class="text-slate-800 block mb-1">เวลาที่บันทึก (datetime):</strong> 
+         <div> <strong class="text-slate-800 block mb-1">เวลาที่บันทึก:</strong> 
           <span id="auto-datetime" class="font-medium text-slate-700 text-sm">--</span> 
          </div>
       
@@ -160,68 +181,86 @@
         <div><strong class="text-slate-800">ผู้บันทึก (by):</strong> <span id="auto-by" class="font-bold text-emerald-600">--</span></div>
       </div>
 
+
+
+
+
       <!-- Dynamic Form Inputs -->
-      <form onsubmit="handleFormSubmit(event)" class="p-4 space-y-4">
+      <form onsubmit="handleFormSubmit(event)" class="p-4 space-y-1">
         
         <div id="field-bed" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">แปลง (bed)</label>
-          <input type="text" id="input-bed" placeholder="เช่น 1A, 1B, 2C" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-sm font-bold text-slate-700 mb-1">ชื่อแปลง (bed)</label>
+          <input type="text" id="input-bed" placeholder="เช่น 1A, 1B, 2C" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
-        <div id="field-qty" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">จำนวน (qty)</label>
-          <input type="number" step="any" id="input-qty" placeholder="เช่น 20, 50, 100" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-        </div>
 
         <div id="field-type" class="form-field">
           <label class="block text-sm font-bold text-slate-700 mb-1">ประเภท/ชนิด (type)</label>
-          <input type="text" id="input-type" placeholder="เช่น สลัด, คื่นฉ่าย, a, d" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <input type="text" id="input-type" placeholder="เช่น สลัด, คื่นฉ่าย, a, d" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
-        <div id="field-tank_no" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">ถัง/เลขถัง (tank no)</label>
-          <input type="text" id="input-tank_no" placeholder="เช่น 1, 46296-T001" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+
+        <div id="field-qty" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">จำนวน (qty)</label>
+          <input type="number" step="any" id="input-qty" placeholder="เช่น 20, 50, 100" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
+
+
+
+        <div id="field-tank_no" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1"> จาก (ถาด/แปลง/ถัง)</label>
+          <input type="text" id="input-tank_no" placeholder="เช่น 1, 46296-T001" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
+
+        <div id="note" class="form-field">
+          <label class="block text-sm font-bold text-slate-700 mb-1">หมายเหตุ (note)</label>
+          <input type="text" id="input-note" placeholder="เช่น 11" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+
 
         <div id="field-age" class="form-field">
           <label class="block text-sm font-bold text-slate-700 mb-1">อายุ (age)</label>
-          <input type="number" id="input-age" placeholder="เช่น 11" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <input type="number" id="input-age" placeholder="เช่น 11" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
+
         <!-- Fertilizer fields -->
-        <div id="field-fert" class="form-field grid grid-cols-2 gap-2">
+        <div id="field-fert" class="form-field grid grid-cols-2 gap-1">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">ปุ๋ยก่อน (fert_bef)</label>
-            <input type="number" step="any" id="input-fert_bef" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">ค่าปุ๋ยก่อนเติม (fert_bef)</label>
+            <input type="number" step="any" id="input-fert_bef" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">ปุ๋ยหลัง (fert_aft)</label>
-            <input type="number" step="any" id="input-fert_aft" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">ค่าปุ๋ยหลังเติม (fert_aft)</label>
+            <input type="number" step="any" id="input-fert_aft" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
         </div>
 
         <div id="field-ph" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">pH</label>
-          <input type="number" step="0.1" id="input-ph" placeholder="เช่น 5.5, 6.0" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-sm font-bold text-slate-700 mb-1">ค่า pH</label>
+          <input type="number" step="0.1" id="input-ph" placeholder="เช่น 5.5, 6.0" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
-        <div id="field-level" class="form-field grid grid-cols-2 gap-2">
+        <div id="field-level" class="form-field grid grid-cols-2 gap-1">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">ระดับก่อน (level_bef)</label>
-            <input type="number" step="any" id="input-level_bef" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">ระดับน้ำก่อนเติม (level_bef)</label>
+            <input type="number" step="any" id="input-level_bef" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">ระดับหลัง (level_aft)</label>
-            <input type="number" step="any" id="input-level_aft" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">ระดับน้ำหลังเติม (level_aft)</label>
+            <input type="number" step="any" id="input-level_aft" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
         </div>
 
-        <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition text-lg mt-4">
+        <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py- 2 rounded-xl shadow-lg transition text-lg mt-4">
           บันทึกข้อมูล
         </button>
       </form>
     </div>
   </div>
+
+
 
   <!-- Password-Protected Settings Modal -->
   <div id="settings-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
@@ -255,6 +294,10 @@
   </div>
 
   <script>
+
+
+//-----------------saperater-----------------------//
+
     let activeCategory = '';
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -262,9 +305,17 @@
       updateDateDisplay();
     });
 
+
+//-----------------saperater-----------------------//
+
+
     function getAdminPassword() {
       return localStorage.getItem('farm_admin_password') || '1234';
     }
+
+
+
+//-----------------saperater-----------------------//
 
     function openSettingsWithPassword() {
       const currentPassword = getAdminPassword();
@@ -281,9 +332,16 @@
       }
     }
 
+
+//-----------------saperater-----------------------//
+
+
     function closeSettingsModal() {
       document.getElementById('settings-modal').classList.add('hidden');
     }
+
+
+//-----------------saperater-----------------------//
 
     function saveSettings() {
       const url = document.getElementById('setting-url').value.trim();
@@ -300,6 +358,10 @@
       closeSettingsModal();
     }
 
+
+//-----------------saperater-----------------------//
+
+
     function checkAuth() {
       const userBy = localStorage.getItem('farm_user_by');
       if (userBy) {
@@ -311,6 +373,11 @@
         document.getElementById('menu-view').classList.add('hidden');
       }
     }
+
+
+
+//-----------------saperater-----------------------//
+
 
     function handleRegister(e) {
       e.preventDefault();
@@ -324,6 +391,10 @@
       }
     }
 
+
+//-----------------saperater-----------------------//
+
+
     function logout() {
       if (confirm('คุณต้องการเปลี่ยนผู้ใช้งานใช่หรือไม่?')) {
         localStorage.removeItem('farm_user_by');
@@ -332,10 +403,18 @@
       }
     }
 
+
+//-----------------saperater-----------------------//
+
+
     function updateDateDisplay() {
       const now = new Date();
       document.getElementById('date-display').innerText = formatDateToDisplay(now);
     }
+
+
+//-----------------saperater-----------------------//
+
 
     function formatDateToDisplay(d) {
       const day = String(d.getDate()).padStart(2, '0');
@@ -344,12 +423,22 @@
       return `${day}/${month}/${year}`;
     }
 
+
+
+//-----------------saperater-----------------------//
+
+
     function formatDateTime(d) {
       const datePart = formatDateToDisplay(d);
       const hrs = String(d.getHours()).padStart(2, '0');
       const mins = String(d.getMinutes()).padStart(2, '0');
       return `${datePart} ${hrs}:${mins}`;
     }
+
+
+
+//-----------------saperater-----------------------//
+
 
     function openForm(cate, icon, bgClass) {
       activeCategory = cate;
@@ -372,29 +461,35 @@
       const emojiMap = {
         'ปลูก': '🌱',
         'เติมปุ๋ย': '🧪',
-        'ใส่ยา': '💊',
-        'ฉีดใบ': '🚿',
-        'เก็บเกี่ยว': '🧺'
+        'พ่นยา': '💊',
+        'พ่นปุ๋ย': '🚿',
+        'ย้าย / เก็บเกี่ยว': '🧺'
       };
       document.getElementById('form-icon-container').innerText = emojiMap[cate] || '📝';
 
       document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
 
+
       if (cate === 'ปลูก') {
-        showFields(['bed', 'qty', 'type', 'tank_no']);
+        showFields(['bed',  'type','qty', 'tank_no', 'note']);
       } else if (cate === 'เติมปุ๋ย') {
-        showFields(['bed', 'qty', 'type', 'fert', 'ph', 'level']);
-      } else if (cate === 'ใส่ยา') {
-        showFields(['bed', 'qty', 'type', 'tank_no', 'age']);
-      } else if (cate === 'ฉีดใบ') {
-        showFields(['bed', 'qty', 'type', 'tank_no']);
-      } else if (cate === 'เก็บเกี่ยว') {
-        showFields(['bed', 'qty', 'type']);
+        showFields(['bed', 'type', 'qty', 'fert', 'ph', 'level', 'note']);
+      } else if (cate === 'พ่นยา') {
+        showFields(['bed', 'type', 'qty','tank_no', 'age'], 'note');
+      } else if (cate === 'พ่นปุ๋ย') {
+        showFields(['bed', 'type', 'qty', 'tank_no', 'note']);
+      } else if (cate === 'ย้าย / เก็บเกี่ยว') {
+        showFields(['bed', 'qty', 'type', 'note']);
       }
 
       document.getElementById('menu-view').classList.add('hidden');
       document.getElementById('form-view').classList.remove('hidden');
     }
+
+
+
+//-----------------saperater-----------------------//
+
 
     function showFields(fieldIds) {
       fieldIds.forEach(id => {
@@ -403,10 +498,21 @@
       });
     }
 
+
+
+//-----------------saperater-----------------------//
+
+
     function showMenuView() {
       document.getElementById('form-view').classList.add('hidden');
       document.getElementById('menu-view').classList.remove('hidden');
     }
+
+
+
+//-----------------saperater-----------------------//
+
+
 
     async function handleFormSubmit(e) {
       e.preventDefault();
@@ -435,6 +541,7 @@
         qty: document.getElementById('input-qty')?.value || '',
         type: document.getElementById('input-type')?.value || '',
         tank_no: document.getElementById('input-tank_no')?.value || '',
+        note: document.getElementById('input-note')?.value || '',
         age: document.getElementById('input-age')?.value || '',
         fert_bef: document.getElementById('input-fert_bef')?.value || '',
         fert_aft: document.getElementById('input-fert_aft')?.value || '',
@@ -468,6 +575,10 @@
       submitBtn.disabled = false;
       submitBtn.innerText = 'บันทึกข้อมูล';
     }
+
+
+//-----------------saperater-----------------------//
+
 
     function clearFormInputs() {
       document.querySelectorAll('#form-view input:not([type="date"])').forEach(i => i.value = '');
