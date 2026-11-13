@@ -155,7 +155,7 @@
       <div id="form-header" class="p-2 text-white flex justify-between items-center">
         <div class="flex items-center space-x-1">
           <span id="form-icon-container" class="text-2xl"></span>
-          <h2 id="form-title" class="text-2xl font-bold">--</h2>
+          <h2 id="form-title" class="text-lg font-bold">--</h2>
         </div>
 
         <button onclick="showMenuView()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-sm font-bold">
@@ -166,14 +166,14 @@
 
 
       <!-- Auto-filled / Editable Metadata Box-->
-      <div class="bg-slate-50 p-4 border-b text-xs grid grid-cols-2 gap-2 text-slate-600 items-center">
+      <div class="bg-slate-50 p-2 border-b text-xs grid grid-cols-2 gap-1 text-slate-600 items-center">
         <div>
-          <strong class="text-slate-800 block mb-1">วันที่ทำ:</strong> 
+          <strong class="text-slate-800 block mb-1">วันที่ทำ (action):</strong> 
           <input type="date" id="input-date" class="p-1.5 border rounded-lg bg-white text-xs font-bold text-emerald-700 w-full focus:ring-1 focus:ring-emerald-500 focus:outline-none" />
         </div>
          
       
-         <div> <strong class="text-slate-800 block mb-1">เวลาที่บันทึก:</strong> 
+         <div> <strong class="text-slate-800 block mb-1">เวลาที่บันทึก (record):</strong> 
           <span id="auto-datetime" class="font-medium text-slate-700 text-sm">--</span> 
          </div>
       
@@ -186,60 +186,54 @@
 
 
       <!-- Dynamic Form Inputs -->
-      <form onsubmit="handleFormSubmit(event)" class="p-4 space-y-1">
+      <form onsubmit="handleFormSubmit(event)" class="p-2 space-y-1">
         
         <div id="field-bed" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">ชื่อแปลง (bed)</label>
-          <input type="text" id="input-bed" placeholder="เช่น 1A, 1B, 2C" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อแปลง (bed)</label>
+          <input type="text" id="input-bed" placeholder="เช่น 1A, 1B, 2C" class="w-full p-1 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
 
         <div id="field-type" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">ประเภท/ชนิด (type)</label>
-          <input type="text" id="input-type" placeholder="เช่น สลัด, คื่นฉ่าย, a, d" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">ประเภท/ชนิด (type)</label>
+          <input type="text" id="input-type" placeholder="เช่น สลัด, คื่นฉ่าย, a, d" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
 
         <div id="field-qty" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">จำนวน (qty)</label>
-          <input type="number" step="any" id="input-qty" placeholder="เช่น 20, 50, 100" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">จำนวน (qty)</label>
+          <input type="number" step="any" id="input-qty" placeholder="เช่น 20, 50, 100" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
-
 
 
         <div id="field-tank_no" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1"> จาก (ถาด/แปลง/ถัง)</label>
-          <input type="text" id="input-tank_no" placeholder="เช่น 1, 46296-T001" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-xs font-bold text-slate-700 mb-1"> จาก (ถาด/แปลง/ถัง)</label>
+          <input type="text" id="input-tank_no" placeholder="เช่น 1, 46296-T001" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
 
-        <div id="note" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">หมายเหตุ (note)</label>
-          <input type="text" id="input-note" placeholder="เช่น 11" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        <div id="field-note" class="form-field">
+          <label class="block text-xs font-bold text-slate-700 mb-1">หมายเหตุ (note)</label>
+          <input type="text" id="input-note" placeholder="เช่น 11" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
-
-        <div id="field-age" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">อายุ (age)</label>
-          <input type="number" id="input-age" placeholder="เช่น 11" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-        </div>
 
 
         <!-- Fertilizer fields -->
         <div id="field-fert" class="form-field grid grid-cols-2 gap-1">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ค่าปุ๋ยก่อนเติม (fert_bef)</label>
-            <input type="number" step="any" id="input-fert_bef" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <input type="number" step="any" id="input-fert_bef" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ค่าปุ๋ยหลังเติม (fert_aft)</label>
-            <input type="number" step="any" id="input-fert_aft" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <input type="number" step="any" id="input-fert_aft" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
         </div>
 
         <div id="field-ph" class="form-field">
-          <label class="block text-sm font-bold text-slate-700 mb-1">ค่า pH</label>
-          <input type="number" step="0.1" id="input-ph" placeholder="เช่น 5.5, 6.0" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">ค่า pH</label>
+          <input type="number" step="0.1" id="input-ph" placeholder="เช่น 5.5, 6.0" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
         <div id="field-level" class="form-field grid grid-cols-2 gap-1">
@@ -249,7 +243,7 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ระดับน้ำหลังเติม (level_aft)</label>
-            <input type="number" step="any" id="input-level_aft" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <input type="number" step="any" id="input-level_aft" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
         </div>
 
@@ -475,7 +469,7 @@
       } else if (cate === 'เติมปุ๋ย') {
         showFields(['bed', 'type', 'qty', 'fert', 'ph', 'level', 'note']);
       } else if (cate === 'พ่นยา') {
-        showFields(['bed', 'type', 'qty','tank_no', 'age'], 'note');
+        showFields(['bed', 'type', 'qty','tank_no', 'note']);
       } else if (cate === 'พ่นปุ๋ย') {
         showFields(['bed', 'type', 'qty', 'tank_no', 'note']);
       } else if (cate === 'ย้าย / เก็บเกี่ยว') {
