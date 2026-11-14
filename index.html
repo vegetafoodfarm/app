@@ -12,7 +12,7 @@
 
 
   <!-- Header -->
-  <header class="bg-emerald-600 text-white p-2 shadow-md flex justify-between items-center sticky top-0 z-40">
+  <header class="bg-emerald-600 text-white p-1 shadow-md flex justify-between items-center sticky top-0 z-40">
 
     <div class="flex items-center space-x-2">
       <i class="fa-solid fa-seedling text-2xl"></i>
@@ -64,7 +64,7 @@
 
   <!-- User info banner -->
 
-    <div class="bg-emerald-600 text-white p-2 rounded-xl shadow-md flex justify-between items-center">
+    <div class="bg-emerald-600 text-white p-1 rounded-xl shadow-md flex justify-between items-center">
       <div class="flex items-center space-x-3">
         <div class="bg-white/20 p-1 rounded-xl text-2xl">🌱</div>
         <div>
@@ -73,59 +73,76 @@
         </div>
       </div>
       <div class="text-right">
-        <div class="text-xs text-emerald-200 font-bold">วันที่</div>
-        <div class="text-sm font-medium" id="date-display">--/--/----</div>
+      
+        <div>  
+        <span id="auto-datetime" class="font-medium text-emerald-200 text-sm">--</span> 
+         </div>
+
       </div>
     </div>
 
     <h3 class="text-lg font-bold text-slate-700 px-1">เลือกรายการทำงาน</h3>
 
-    <!-- 5 Big Vertical Stacked Cards -->
+
+
+    <!-- 6 Big Vertical Stacked Cards -->
     <div class="grid grid-cols-1 gap-1">
 
 
 
+      <!-- 0) เพาะ -->
+      <button onclick="openForm('เพาะ', 'seedling', 'bg-pink-400')" class="bg-white p-1 rounded-xl shadow-md border-2 border-pink-500 hover:bg-pink-50 text-left flex items-center space-x-4 active:scale-98 transition">
+        <div class="bg-pink-400 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
+          🫘
+        </div>
+        <div>
+          <div class="text-lg font-extrabold text-slate-800">0) เพาะ</div>
+          <div class="text-xs text-slate-500">บันทึกการเพาะกล้า</div>
+        </div>
+      </button>
+
+
 
       <!-- 1) ปลูก -->
-      <button onclick="openForm('ปลูก', 'sprout', 'bg-emerald-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-emerald-500 hover:bg-emerald-50 text-left flex items-center space-x-4 active:scale-98 transition">
+      <button onclick="openForm('ปลูก', 'sprout', 'bg-emerald-500')" class="bg-white p-1 rounded-xl shadow-md border-2 border-emerald-500 hover:bg-emerald-50 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-emerald-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           🌱
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">1) ปลูก</div>
+          <div class="text-lg font-extrabold text-slate-800">1) ปลูก</div>
           <div class="text-xs text-slate-500">บันทึกการลงแปลงปลูกผัก</div>
         </div>
       </button>
 
       <!-- 2) เติมปุ๋ย -->
-      <button onclick="openForm('เติมปุ๋ย', 'flask', 'bg-blue-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-blue-500 hover:bg-blue-50 text-left flex items-center space-x-4 active:scale-98 transition">
+      <button onclick="openForm('เติมปุ๋ย', 'flask', 'bg-blue-500')" class="bg-white p-1 rounded-xl shadow-md border-2 border-blue-500 hover:bg-blue-50 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-blue-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           🧪
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">2) เติมปุ๋ย</div>
+          <div class="text-lg font-extrabold text-slate-800">2) เติมปุ๋ย</div>
           <div class="text-xs text-slate-500">บันทึกค่าวัดและปริมาณปุ๋ย</div>
         </div>
       </button>
 
       <!-- 3) พ่นปุ๋ย -->
-      <button onclick="openForm('พ่นปุ๋ย', 'spray-can', 'bg-amber-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-amber-500 hover:bg-amber-50 text-left flex items-center space-x-4 active:scale-98 transition">
+      <button onclick="openForm('พ่นปุ๋ย', 'spray-can', 'bg-amber-500')" class="bg-white p-1 rounded-xl shadow-md border-2 border-amber-500 hover:bg-amber-50 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-amber-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           🚿
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">3) พ่นปุ๋ย</div>
+          <div class="text-lg font-extrabold text-slate-800">3) พ่นปุ๋ย</div>
           <div class="text-xs text-slate-500">บันทึกการพ่นปุ๋ย</div>
         </div>
       </button>
 
       <!-- 4) พ่นยา -->
-      <button onclick="openForm('พ่นยา', 'tablets', 'bg-purple-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-purple-500 hover:bg-purple-50 text-left flex items-center space-x-4 active:scale-98 transition">
+      <button onclick="openForm('พ่นยา', 'tablets', 'bg-purple-500')" class="bg-white p-1 rounded-xl shadow-md border-2 border-purple-500 hover:bg-purple-50 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-purple-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           💊
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">4) พ่นยา</div>
+          <div class="text-lg font-extrabold text-slate-800">4) พ่นยา</div>
           <div class="text-xs text-slate-500">บันทึกการพ่นยา</div>
         </div>
       </button>
@@ -133,13 +150,13 @@
 
 
       <!-- 5) ย้าย / เก็บเกี่ยว -->
-      <button onclick="openForm('ย้าย / เก็บเกี่ยว', 'basket-shopping', 'bg-rose-500')" class="bg-white p-2 rounded-xl shadow-md border-2 border-rose-500 hover:bg-rose-10 text-left flex items-center space-x-4 active:scale-98 transition">
+      <button onclick="openForm('ย้าย / เก็บเกี่ยว', 'basket-shopping', 'bg-rose-500')" class="bg-white p-1 rounded-xl shadow-md border-2 border-rose-500 hover:bg-rose-10 text-left flex items-center space-x-4 active:scale-98 transition">
         <div class="bg-rose-500 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-sm shrink-0">
           🧺
         </div>
         <div>
-          <div class="text-xl font-extrabold text-slate-800">5) ย้าย / เก็บเกี่ยว</div>
-          <div class="text-xs text-slate-500">บันทึกจำนวนผลผลิตที่ย้าย / เก็บเกี่ยว</div>
+          <div class="text-lg font-extrabold text-slate-800">5) ย้าย / เก็บเกี่ยว</div>
+          <div class="text-xs text-slate-500">บันทึกการย้ายแปลงปลูก/เก็บเกี่ยว</div>
         </div>
       </button>
 
@@ -152,7 +169,7 @@
       
 
       <!-- Form Header -->
-      <div id="form-header" class="p-2 text-white flex justify-between items-center">
+      <div id="form-header" class="p-1 text-white flex justify-between items-center">
         <div class="flex items-center space-x-1">
           <span id="form-icon-container" class="text-2xl"></span>
           <h2 id="form-title" class="text-lg font-bold">--</h2>
@@ -167,35 +184,31 @@
 
       <!-- Auto-filled / Editable Metadata Box-->
       <div class="bg-slate-50 p-2 border-b text-xs grid grid-cols-2 gap-1 text-slate-600 items-center">
+
+
+        <div><strong class="text-slate-800">ประเภท (cate):</strong> <span id="auto-cate" class="font-bold text-emerald-600">--</span></div>
+        <div><strong class="text-slate-800">ผู้บันทึก (by):</strong> <span id="auto-by" class="font-bold text-emerald-600">--</span></div>
+     
+
         <div>
           <strong class="text-slate-800 block mb-1">วันที่ทำ (action):</strong> 
           <input type="date" id="input-date" class="p-1.5 border rounded-lg bg-white text-xs font-bold text-emerald-700 w-full focus:ring-1 focus:ring-emerald-500 focus:outline-none" />
         </div>
          
       
-         <div> <strong class="text-slate-800 block mb-1">เวลาที่บันทึก (record):</strong> 
-          <span id="auto-datetime" class="font-medium text-slate-700 text-sm">--</span> 
-         </div>
+
+
+ </div>
       
-        <div><strong class="text-slate-800">ประเภท (cate):</strong> <span id="auto-cate" class="font-bold text-emerald-600">--</span></div>
-        <div><strong class="text-slate-800">ผู้บันทึก (by):</strong> <span id="auto-by" class="font-bold text-emerald-600">--</span></div>
-      </div>
-
-
-
 
 
       <!-- Dynamic Form Inputs -->
       <form onsubmit="handleFormSubmit(event)" class="p-2 space-y-1">
-        
-        <div id="field-bed" class="form-field">
-          <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อแปลง (bed)</label>
-          <input type="text" id="input-bed" placeholder="เช่น 1A, 1B, 2C" class="w-full p-1 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-        </div>
 
+          
 
         <div id="field-type" class="form-field">
-          <label class="block text-xs font-bold text-slate-700 mb-1">ประเภท/ชนิด (type)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">ชนิด(type)</label>
           <input type="text" id="input-type" placeholder="เช่น สลัด, คื่นฉ่าย, a, d" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
@@ -207,15 +220,63 @@
 
 
         <div id="field-tank_no" class="form-field">
-          <label class="block text-xs font-bold text-slate-700 mb-1"> จาก (ถาด/แปลง/ถัง)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1"> จาก (เลขถาด/ชื่อแปลง/เลขถัง)</label>
           <input type="text" id="input-tank_no" placeholder="เช่น 1, 46296-T001" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
 
 
         <div id="field-note" class="form-field">
           <label class="block text-xs font-bold text-slate-700 mb-1">หมายเหตุ (note)</label>
+
           <input type="text" id="input-note" placeholder="เช่น 11" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
         </div>
+
+
+
+	<div id="field-bed" class="form-field"> 
+  <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อแปลง (House & Bed)</label>
+<div class="grid grid-cols-2 gap-2">
+ 
+
+	<select id="input-house" class="w-full p-1 border rounded-lg bg-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+      <option value="" disabled selected>เลือกโรง...</option>
+      <option value="1">โรง 1</option>
+      <option value="2">โรง 2</option>
+      <option value="3">โรง 3</option>
+      <option value="4">โรง 4</option>
+      <option value="5">โรง 5</option>
+      <option value="5">โรงเพาะ</option>
+    </select>
+
+
+	<!-- Dynamic Bed Dropdown -->
+	<!-- พื้นที่แสดงแปลง (เปลี่ยนอัตโนมัติระหว่าง Select กับ Checkboxes) -->
+<!-- Custom 3-Column Dropdown -->
+<div id="bed-input-wrapper" class="relative w-full">
+  <!-- Hidden input to store the selected value for forms -->
+  <input type="hidden" id="input-bed" name="bed" value="">
+
+  <!-- Dropdown Button (Looks like your original select) -->
+  <button type="button" id="dropdown-btn" class="w-full p-1.5 px-2 border rounded-lg bg-white text-xs text-left flex justify-between items-center focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+    <span id="dropdown-label" class="text-gray-500">เลือกโรงก่อน...</span>
+    <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <!-- Dropdown Menu (3 Columns Grid) -->
+  <div id="dropdown-menu" class="hidden absolute z-10 mt-1 w-full bg-white border rounded-lg shadow-lg p-2 max-h-48 overflow-y-auto">
+    <div id="bed-options-grid" class="grid grid-cols-3 gap-1 text-xs">
+      <!-- Options will be dynamically inserted here -->
+      <div class="col-span-3 text-gray-400 text-center py-1">เลือกโรงก่อน...</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
 
 
 
@@ -246,6 +307,7 @@
             <input type="number" step="any" id="input-level_aft" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
         </div>
+
 
         <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py- 2 rounded-xl shadow-lg transition text-lg mt-4">
           บันทึกข้อมูล
@@ -293,11 +355,87 @@
 //-----------------saperater-----------------------//
 
     let activeCategory = '';
+    let bedList = [];
+    let vegList = [];
+    let chemList = [];
 
-    window.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
-      updateDateDisplay();
+  window.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+  updateDateDisplay();
+  loadMasterData();
+});
+
+
+
+
+
+//-----------------saperater-----------------------//
+
+async function loadMasterData() {
+  const scriptUrl = localStorage.getItem('farm_script_url');
+  if (!scriptUrl) return;
+
+  try {
+    const response = await fetch(scriptUrl);
+    const data = await response.json();
+
+    bedList = data.beds || [];
+    vegList = data.vegetables || [];
+    chemList = data.chemicals || [];
+
+    // Cache all lists in localStorage for offline fallback
+    localStorage.setItem('farm_master_data', JSON.stringify(data));
+  } catch (err) {
+    console.error('Error loading master data:', err);
+    const cached = localStorage.getItem('farm_master_data');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      bedList = parsed.beds || [];
+      vegList = parsed.vegetables || [];
+      chemList = parsed.chemicals || [];
+    }
+  }
+}
+
+
+
+//-----------------saperater-----------------------//
+
+
+
+function updateBedDropdown() {
+  const selectedHouse = document.getElementById('input-house').value;
+  const wrapper = document.getElementById('bed-input-wrapper');
+  const isMulti = (activeCategory === 'พ่นปุ๋ย' || activeCategory === 'พ่นยา'|| activeCategory === 'เพาะ');
+
+  const filteredBeds = bedList.filter(item => item.house === selectedHouse);
+
+  if (isMulti) {
+    // แสดงผลแบบ Checkboxes หลายตัวเลือก (สำหรับ พ่นปุ๋ย / พ่นยา)
+    if (filteredBeds.length === 0) {
+      wrapper.innerHTML = '<div class="text-xs text-gray-400 p-1">ไม่พบแปลงในโรงนี้</div>';
+      return;
+    }
+    let html = '<div class="max-h-32 overflow-y-auto border rounded-lg p-1.5 bg-white space-y-1 text-xs">';
+    filteredBeds.forEach(item => {
+      html += `<label class="flex items-center space-x-2 cursor-pointer hover:bg-slate-50 p-1 rounded">
+                 <input type="checkbox" name="multi-bed" value="${item.bed}" class="rounded text-emerald-600 focus:ring-emerald-500">
+                 <span>${item.bed}</span>
+               </label>`;
     });
+    html += '</div>';
+    wrapper.innerHTML = html;
+  } else {
+    // แสดงผลแบบ Dropdown เลือกอันเดียว (สำหรับ ปลูก, เติมปุ๋ย, ย้าย / เก็บเกี่ยว)
+    let html = '<select id="input-bed" class="w-full p-1 border rounded-lg bg-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"><option value="" disabled selected>เลือกแปลง...</option>';
+    filteredBeds.forEach(item => {
+      html += `<option value="${item.bed}">${item.bed}</option>`;
+    });
+    html += '</select>';
+    wrapper.innerHTML = html;
+  }
+}
+
 
 
 //-----------------saperater-----------------------//
@@ -453,6 +591,7 @@
       document.getElementById('form-title').innerText = cate;
 
       const emojiMap = {
+        'เพาะ': '🫘',
         'ปลูก': '🌱',
         'เติมปุ๋ย': '🧪',
         'พ่นยา': '💊',
@@ -464,14 +603,16 @@
       document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
 
 
-      if (cate === 'ปลูก') {
-        showFields(['bed',  'type','qty', 'tank_no', 'note']);
+      if (cate === 'เพาะ') {
+        showFields(['bed', 'type','qty', 'note']);
+      } else if (cate === 'ปลูก') {
+        showFields(['bed', 'type','qty', 'tank_no', 'note']);
       } else if (cate === 'เติมปุ๋ย') {
         showFields(['bed', 'type', 'qty', 'fert', 'ph', 'level', 'note']);
       } else if (cate === 'พ่นยา') {
-        showFields(['bed', 'type', 'qty','tank_no', 'note']);
+        showFields(['bed', 'type','tank_no', 'note']);
       } else if (cate === 'พ่นปุ๋ย') {
-        showFields(['bed', 'type', 'qty', 'tank_no', 'note']);
+        showFields(['bed', 'type', 'tank_no', 'note']);
       } else if (cate === 'ย้าย / เก็บเกี่ยว') {
         showFields(['bed', 'qty', 'type', 'note']);
       }
@@ -526,23 +667,35 @@
         }
       }
 
-      const payload = {
-        date: formattedDate,
-        datetime: formatDateTime(now),
-        cate: activeCategory,
-        by: userBy,
-        bed: document.getElementById('input-bed')?.value || '',
-        qty: document.getElementById('input-qty')?.value || '',
-        type: document.getElementById('input-type')?.value || '',
-        tank_no: document.getElementById('input-tank_no')?.value || '',
-        note: document.getElementById('input-note')?.value || '',
-        age: document.getElementById('input-age')?.value || '',
-        fert_bef: document.getElementById('input-fert_bef')?.value || '',
-        fert_aft: document.getElementById('input-fert_aft')?.value || '',
-        ph: document.getElementById('input-ph')?.value || '',
-        level_bef: document.getElementById('input-level_bef')?.value || '',
-        level_aft: document.getElementById('input-level_aft')?.value || ''
-      };
+	// ตรวจสอบว่าหน้างานเป็นแบบเลือกหลายอันหรือไม่
+  const isMulti = (activeCategory === 'พ่นปุ๋ย' || activeCategory === 'พ่นยา');
+  let bedValue = '';
+
+  if (isMulti) {
+    const checkedBeds = Array.from(document.querySelectorAll('input[name="multi-bed"]:checked')).map(cb => cb.value);
+    bedValue = checkedBeds.join(', '); // รวมแปลงที่เลือกด้วยเครื่องหมายคอมมา
+  } else {
+    bedValue = document.getElementById('input-bed')?.value || '';
+  }
+
+  const payload = {
+    date: formattedDate,
+    datetime: formatDateTime(now),
+    cate: activeCategory,
+    by: userBy,
+    house: document.getElementById('input-house')?.value || '',
+    bed: bedValue, // ใช้ค่าที่รวมแล้วส่งเข้า Google Sheets คอลัมน์ E
+    qty: document.getElementById('input-qty')?.value || '',
+    type: document.getElementById('input-type')?.value || '',
+    tank_no: document.getElementById('input-tank_no')?.value || '',
+    age: document.getElementById('input-age')?.value || '',
+    fert_bef: document.getElementById('input-fert_bef')?.value || '',
+    fert_aft: document.getElementById('input-fert_aft')?.value || '',
+    ph: document.getElementById('input-ph')?.value || '',
+    level_bef: document.getElementById('input-level_bef')?.value || '',
+    level_aft: document.getElementById('input-level_aft')?.value || '',
+    note: document.getElementById('input-note')?.value || ''
+  };
 
       const scriptUrl = localStorage.getItem('farm_script_url');
 
@@ -574,9 +727,19 @@
 //-----------------saperater-----------------------//
 
 
-    function clearFormInputs() {
-      document.querySelectorAll('#form-view input:not([type="date"])').forEach(i => i.value = '');
-    }
+function clearFormInputs() {
+  document.querySelectorAll('#form-view input:not([type="date"])').forEach(i => i.value = '');
+
+  const houseSelect = document.getElementById('input-house');
+  if (houseSelect) houseSelect.selectedIndex = 0;
+
+  const bedWrapper = document.getElementById('bed-input-wrapper');
+  if (bedWrapper) {
+    bedWrapper.innerHTML = `<select id="input-bed" class="w-full p-1 border rounded-lg bg-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+      <option value="" disabled selected>เลือกโรงก่อน...</option>
+    </select>`;
+  }
+}
   </script>
 </body>
 </html>
