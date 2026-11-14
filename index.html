@@ -230,24 +230,24 @@
 
 	<div id="field-bed" class="form-field"> 
   <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อแปลง (House & Bed)</label>
-<div class="grid grid-cols-2 gap-2">
+<div class="grid grid-cols-[auto_1fr] gap-1">
  
 
-	<select id="input-house" class="w-full p-1 border rounded-xl bg-white text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+	<select id="input-house" onchange="updateBedDropdown()" class="w-30 p-1 border rounded-xl bg-white text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none">
       <option value="" disabled selected>เลือกโรง...</option>
-      <option value="1">โรง 1</option>
-      <option value="2">โรง 2</option>
-      <option value="3">โรง 3</option>
-      <option value="4">โรง 4</option>
-      <option value="5">โรง 5</option>
-      <option value="6">โรงเพาะ</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">เพาะ</option>
     </select>
 
 
 	<!-- Dynamic Bed Dropdown -->
 	<!-- พื้นที่แสดงแปลง (เปลี่ยนอัตโนมัติระหว่าง Select กับ Checkboxes) -->
 <!-- Custom 3-Column Dropdown -->
-<div id="bed-input-wrapper" class="relative w-full">
+<div id="bed-input-wrapper" class="relative flex-1">
   <!-- Hidden input to store the selected value for forms -->
   <input type="hidden" id="input-bed" name="bed" value="">
 
@@ -361,7 +361,7 @@
 
   window.addEventListener('DOMContentLoaded', () => {
   checkAuth();
-  updateDateDisplay();
+  
   loadMasterData();
 });
 
@@ -539,10 +539,7 @@ function updateBedDropdown() {
 //-----------------saperater-----------------------//
 
 
-    function updateDateDisplay() {
-      const now = new Date();
-      document.getElementById('date-display').innerText = formatDateToDisplay(now);
-    }
+
 
 
 //-----------------saperater-----------------------//
@@ -592,49 +589,81 @@ function updateBedDropdown() {
       // ส่วนที่เพิ่มใหม่: เปลี่ยน Label และ Placeholder ตามกิจกรรม (cate)
       // ----------------------------------------------------
 
-    const typeLabel = document.querySelector('label[for="input-type"]') || document.querySelector('#field-type label') || document.querySelector('#field-type-qty label:first-child');
-      const typeInput = document.getElementById('input-type');
-      const qtyLabel = document.querySelector('label[for="input-qty"]') || document.querySelector('#field-qty label') || document.querySelector('#field-type-qty label:nth-child(2)');
-      const qtyInput = document.getElementById('input-qty');
 
-      if (cate === 'เพาะ') {
-        if (typeInput) {
-          typeInput.placeholder = 'เช่น กรีนโอ๊ค, เรดโอ๊ค';
-          if (typeLabel) typeLabel.innerText = 'เมล็ดพันธุ์ / ชนิด (type)';
-        }
-        if (qtyInput) {
-          qtyInput.placeholder = 'เช่น  1, 2';
-          if (qtyLabel) qtyLabel.innerText = 'จำนวนถาดเพาะ (qty)';
-        }
-      } else if (cate === 'ปลูก') {
-        if (typeInput) {
-          typeInput.placeholder = 'เช่น สลัด, คื่นฉ่าย';
-          if (typeLabel) typeLabel.innerText = 'ชนิดผัก (type)';
-        }
-        if (qtyInput) {
-          qtyInput.placeholder = 'เช่น 20, 50, 100';
-          if (qtyLabel) qtyLabel.innerText = 'จำนวนต้น (qty)';
-        }
-      } else if (cate === 'เติมปุ๋ย' || cate === 'พ่นปุ๋ย') {
-        if (typeInput) {
-          typeInput.placeholder = 'เช่น ปุ๋ยสูตร A, สูตร B';
-          if (typeLabel) typeLabel.innerText = 'ชนิดปุ๋ย (type)';
-        }
-      } else if (cate === 'พ่นยา') {
-        if (typeInput) {
-          typeInput.placeholder = 'เช่น บิวเวอเรีย, ราเขียว';
-          if (typeLabel) typeLabel.innerText = 'ชนิดยา / สารป้องกัน (type)';
-        }
-      } else if (cate === 'ย้าย / เก็บเกี่ยว') {
-        if (typeInput) {
-          typeInput.placeholder = 'เช่น ผักสลัดพร้อมขาย';
-          if (typeLabel) typeLabel.innerText = 'เกรด / ชนิดผลผลิต (type)';
-        }
-        if (qtyInput) {
-          if (qtyLabel) qtyLabel.innerText = 'น้ำหนัก / จำนวนที่เก็บ (qty)';
-        }
+
+	//---- Select Type, Qty, Bed, and Tank elements
+    const typeLabel = document.querySelector('label[for="input-type"]') || document.querySelector('#field-type label') || document.querySelector('#field-type-qty label:first-child');
+    const typeInput = document.getElementById('input-type');
+
+    const qtyLabel = document.querySelector('label[for="input-qty"]') || document.querySelector('#field-qty label') || document.querySelector('#field-type-qty label:nth-child(2)');
+    const qtyInput = document.getElementById('input-qty');
+
+    //---- Added elements for Bed and Tank
+    const bedLabel = document.querySelector('#field-bed label');
+    const bedInput = document.getElementById('input-bed'); // (Note: if using a select dropdown, placeholders won't apply, but labels will change)
+    
+    const tankLabel = document.querySelector('#field-tank_no label');
+    const tankInput = document.getElementById('input-tank_no');
+
+
+    if (cate === 'เพาะ') {
+      if (typeInput) {
+        typeInput.placeholder = 'เช่น กรีนโอ๊ค, เรดโอ๊ค';
+        if (typeLabel) typeLabel.innerText = 'ชนิด (type)';
       }
-      // ----------------------------------------------------
+      if (qtyInput) {
+        qtyInput.placeholder = 'เช่น  1, 2';
+        if (qtyLabel) qtyLabel.innerText = 'จำนวนถาดเพาะ (number of tray)';
+      }
+      // Bed and Tank labels/placeholders for เพาะ
+      if (bedLabel) bedLabel.innerText = 'เลขถาด (House & Bed)';
+      
+    } else if (cate === 'ปลูก') {
+      if (typeInput) {
+        typeInput.placeholder = 'เช่น สลัด, คื่นฉ่าย';
+        if (typeLabel) typeLabel.innerText = 'ชนิดผัก (type)';
+      }
+      if (qtyInput) {
+        qtyInput.placeholder = 'เช่น 20, 50, 100';
+        if (qtyLabel) qtyLabel.innerText = 'จำนวนต้น (qty)';
+      }
+      if (bedLabel) bedLabel.innerText = 'ชื่อแปลงปลูก (House & Bed)';
+      if (tankInput) tankInput.placeholder = 'เช่น ถังที่ 1';
+      if (tankLabel) tankLabel.innerText = 'เลขถัง (tank_no)';
+
+    } else if (cate === 'เติมปุ๋ย' || cate === 'พ่นปุ๋ย') {
+      if (typeInput) {
+        typeInput.placeholder = 'เช่น ปุ๋ยสูตร A, สูตร B';
+        if (typeLabel) typeLabel.innerText = 'ชนิดปุ๋ย (type)';
+      }
+      if (bedLabel) bedLabel.innerText = 'แปลงที่เติมปุ๋ย (House & Bed)';
+      if (tankInput) tankInput.placeholder = 'เช่น ถังผสม 200 ลิตร';
+      if (tankLabel) tankLabel.innerText = 'เลขถัง (tank_no)';
+
+    } else if (cate === 'พ่นยา') {
+      if (typeInput) {
+        typeInput.placeholder = 'เช่น บิวเวอเรีย, ราเขียว';
+        if (typeLabel) typeLabel.innerText = 'ชนิดยา / สารป้องกัน (type)';
+      }
+      if (bedLabel) bedLabel.innerText = 'แปลงที่พ่นยา (House & Bed)';
+      if (tankInput) tankInput.placeholder = 'เช่น 1 ';
+      if (tankLabel) tankLabel.innerText = 'เลขถัง (tank_no)';
+
+    } else if (cate === 'ย้าย / เก็บเกี่ยว') {
+      if (typeInput) {
+        typeInput.placeholder = 'เช่น ผักสลัด';
+        if (typeLabel) typeLabel.innerText = 'เกรด / ชนิดผลผลิต (type)';
+      }
+      if (qtyInput) {
+        if (qtyLabel) qtyLabel.innerText = 'จำนวนต้นที่ย้าย / น้ำหนักที่เก็บเกี่ยว (qty)';
+      }
+      if (bedLabel) bedLabel.innerText = 'แปลง (House & Bed)';
+    }
+
+
+
+
+      // ----------------------------------------------------//
 
 
 
