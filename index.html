@@ -245,7 +245,7 @@
       <option value="3">โรง 3</option>
       <option value="4">โรง 4</option>
       <option value="5">โรง 5</option>
-      <option value="5">โรงเพาะ</option>
+      <option value="6">โรงเพาะ</option>
     </select>
 
 
@@ -278,8 +278,6 @@
 
 
 
-
-
         <!-- Fertilizer fields -->
         <div id="field-fert" class="form-field grid grid-cols-2 gap-1">
           <div>
@@ -300,7 +298,7 @@
         <div id="field-level" class="form-field grid grid-cols-2 gap-1">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ระดับน้ำก่อนเติม (level_bef)</label>
-            <input type="number" step="any" id="input-level_bef" class="w-full p-2 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            <input type="number" step="any" id="input-level_bef" class="w-full p-1 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ระดับน้ำหลังเติม (level_aft)</label>
@@ -576,7 +574,8 @@ function updateBedDropdown() {
       activeCategory = cate;
       const now = new Date();
       const userBy = localStorage.getItem('farm_user_by') || '';
-
+      
+      // ... เซ็ตวันที่ เวลา หัวข้อ เดิมของคุณ ...
       const yyyy = now.getFullYear();
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const dd = String(now.getDate()).padStart(2, '0');
@@ -585,6 +584,57 @@ function updateBedDropdown() {
       document.getElementById('auto-datetime').innerText = formatDateTime(now);
       document.getElementById('auto-cate').innerText = cate;
       document.getElementById('auto-by').innerText = userBy;
+
+
+      // ----------------------------------------------------
+      // ส่วนที่เพิ่มใหม่: เปลี่ยน Label และ Placeholder ตามกิจกรรม (cate)
+      // ----------------------------------------------------
+
+    const typeLabel = document.querySelector('label[for="input-type"]') || document.querySelector('#field-type label') || document.querySelector('#field-type-qty label:first-child');
+      const typeInput = document.getElementById('input-type');
+      const qtyLabel = document.querySelector('label[for="input-qty"]') || document.querySelector('#field-qty label') || document.querySelector('#field-type-qty label:nth-child(2)');
+      const qtyInput = document.getElementById('input-qty');
+
+      if (cate === 'เพาะ') {
+        if (typeInput) {
+          typeInput.placeholder = 'เช่น กรีนโอ๊ค, เรดโอ๊ค';
+          if (typeLabel) typeLabel.innerText = 'เมล็ดพันธุ์ / ชนิด (type)';
+        }
+        if (qtyInput) {
+          qtyInput.placeholder = 'เช่น  1, 2';
+          if (qtyLabel) qtyLabel.innerText = 'จำนวนถาดเพาะ (qty)';
+        }
+      } else if (cate === 'ปลูก') {
+        if (typeInput) {
+          typeInput.placeholder = 'เช่น สลัด, คื่นฉ่าย';
+          if (typeLabel) typeLabel.innerText = 'ชนิดผัก (type)';
+        }
+        if (qtyInput) {
+          qtyInput.placeholder = 'เช่น 20, 50, 100';
+          if (qtyLabel) qtyLabel.innerText = 'จำนวนต้น (qty)';
+        }
+      } else if (cate === 'เติมปุ๋ย' || cate === 'พ่นปุ๋ย') {
+        if (typeInput) {
+          typeInput.placeholder = 'เช่น ปุ๋ยสูตร A, สูตร B';
+          if (typeLabel) typeLabel.innerText = 'ชนิดปุ๋ย (type)';
+        }
+      } else if (cate === 'พ่นยา') {
+        if (typeInput) {
+          typeInput.placeholder = 'เช่น บิวเวอเรีย, ราเขียว';
+          if (typeLabel) typeLabel.innerText = 'ชนิดยา / สารป้องกัน (type)';
+        }
+      } else if (cate === 'ย้าย / เก็บเกี่ยว') {
+        if (typeInput) {
+          typeInput.placeholder = 'เช่น ผักสลัดพร้อมขาย';
+          if (typeLabel) typeLabel.innerText = 'เกรด / ชนิดผลผลิต (type)';
+        }
+        if (qtyInput) {
+          if (qtyLabel) qtyLabel.innerText = 'น้ำหนัก / จำนวนที่เก็บ (qty)';
+        }
+      }
+      // ----------------------------------------------------
+
+
 
       const header = document.getElementById('form-header');
       header.className = `p-4 text-white flex justify-between items-center ${bgClass}`;
@@ -599,6 +649,8 @@ function updateBedDropdown() {
         'ย้าย / เก็บเกี่ยว': '🧺'
       };
       document.getElementById('form-icon-container').innerText = emojiMap[cate] || '📝';
+
+// ... โค้ดแสดง/ซ่อนฟิลด์เดิมของคุณ (showFields) ...
 
       document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
 
@@ -617,11 +669,28 @@ function updateBedDropdown() {
         showFields(['bed', 'qty', 'type', 'note']);
       }
 
+// ... เงื่อนไขอื่นๆ ตามปกติ ...
+
       document.getElementById('menu-view').classList.add('hidden');
       document.getElementById('form-view').classList.remove('hidden');
-    }
+   
 
 
+// Set default house to "โรงเพาะ" (value="6") if category is "เพาะ"
+      const houseSelect = document.getElementById('input-house');
+      if (houseSelect) {
+        if (cate === 'เพาะ') {
+          houseSelect.value = '6'; // Selects "โรงเพาะ"
+          // If you also want to automatically load/update the bed/tray dropdown for it:
+          if (typeof updateBedDropdown === 'function') {
+            updateBedDropdown();
+          }
+        } else {
+          houseSelect.selectedIndex = 0; // Reset for other categories
+        }
+      }
+
+ }
 
 //-----------------saperater-----------------------//
 
@@ -668,7 +737,7 @@ function updateBedDropdown() {
       }
 
 	// ตรวจสอบว่าหน้างานเป็นแบบเลือกหลายอันหรือไม่
-  const isMulti = (activeCategory === 'พ่นปุ๋ย' || activeCategory === 'พ่นยา');
+  const isMulti = (activeCategory === 'พ่นปุ๋ย' || activeCategory === 'พ่นยา'|| activeCategory === 'เพาะ');
   let bedValue = '';
 
   if (isMulti) {
