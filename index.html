@@ -467,7 +467,8 @@
     // =======================================================
     // นำ Web App URL ที่ได้จาก Apps Script มาวางที่นี่
     // =======================================================
-    const GAS_API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbztM3MTfSU9nCZreyj0SDvk09YsoEsQtbM39hI6S5SVTCuTybvCAE1Eh61O3Us_AOCwHQ/exec";
 
     let currentUser = null;
     let masterData = {};
@@ -481,7 +482,7 @@
 
     // ฟังก์ชันยิง API แบบ text/plain ป้องกันปัญหา CORS Failed to fetch 100%
     async function apiRequest(action, payload = {}) {
-      if (!GAS_API_URL || GAS_API_URL.includes("https://script.google.com/macros/s/AKfycbztM3MTfSU9nCZreyj0SDvk09YsoEsQtbM39hI6S5SVTCuTybvCAE1Eh61O3Us_AOCwHQ/exec")) {
+      if (!GAS_API_URL || GAS_API_URL.includes("YOUR_APPS_SCRIPT")) {
         alert("กรุณานำ Web App URL จาก Google Apps Script มาใส่ในตัวแปร GAS_API_URL ก่อนครับ");
         throw new Error("Missing GAS_API_URL");
       }
