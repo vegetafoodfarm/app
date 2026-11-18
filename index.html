@@ -1,859 +1,858 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>เขาเขียวฟาร์มผัก</title>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
-    body { background-color: #e5e5e5; display: flex; justify-content: center; padding: 10px; }
-    
-    /* Device Frame */
-    .app-phone {
-      width: 100%;
-      max-width: 420px;
-      min-height: 92vh;
-      background: #f4f5f7;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      display: flex;
-      flex-direction: column;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>เขาเขียวฟาร์มผัก</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+body { background-color: #e5e5e5; display: flex; justify-content: center; padding: 10px; }
 
-    /* Top Green App Header */
-    .app-header {
-      background: #087f43;
-      color: white;
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .app-header .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.15rem;
-      font-weight: 600;
-    }
-    .app-header .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.9rem;
-    }
-    .btn-exit {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.25rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-    }
+/* Device Frame */
+.app-phone {
+width: 100%;
+max-width: 420px;
+min-height: 92vh;
+background: #f4f5f7;
+border-radius: 20px;
+overflow: hidden;
+box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+display: flex;
+flex-direction: column;
+}
 
-    /* Sub-Banner Header for each Form */
-    .sub-header {
-      padding: 8px 14px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-    }
-    .sub-header .title-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-    .sub-header .clock {
-      font-size: 0.8rem;
-      opacity: 0.95;
-    }
-    .btn-close-banner {
-      background: rgba(255, 255, 255, 0.25);
-      border: none;
-      color: white;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
+/* Top Green App Header */
+.app-header {
+background: #087f43;
+color: white;
+padding: 12px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.app-header .brand {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 1.15rem;
+font-weight: 600;
+}
+.app-header .user-badge {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 0.9rem;
+}
+.btn-exit {
+background: none;
+border: none;
+color: white;
+font-size: 1.25rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+}
 
-    /* Color Themes according to App_Draft */
-    .theme-sow { background: #e84393; }
-    .theme-plant { background: #00b060; }
-    .theme-fert { background: #2979ff; }
-    .theme-spray { background: #f39c12; }
-    .theme-harvest { background: #e74c3c; }
+/* Sub-Banner Header for each Form */
+.sub-header {
+padding: 8px 14px;
+color: white;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 0.85rem;
+}
+.sub-header .title-group {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 0.95rem;
+font-weight: 600;
+}
+.sub-header .clock {
+font-size: 0.8rem;
+opacity: 0.95;
+}
+.btn-close-banner {
+background: rgba(255, 255, 255, 0.25);
+border: none;
+color: white;
+padding: 3px 8px;
+border-radius: 4px;
+font-size: 0.78rem;
+cursor: pointer;
+font-weight: 500;
+}
 
-    /* Form Content Body */
-    .form-body {
-      padding: 14px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .field-group { display: flex; flex-direction: column; gap: 4px; }
-    .field-label { font-size: 0.82rem; color: #666; font-weight: 500; }
-    
-    /* Clean Inputs like Draft */
-    input, select, textarea {
-      width: 100%;
-      background: #ffffff;
-      border: 1px solid #dcdcdc;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 0.92rem;
-      outline: none;
-      color: #333;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: #087f43;
-    }
+/* Color Themes according to App_Draft */
+.theme-sow { background: #e84393; }
+.theme-plant { background: #00b060; }
+.theme-fert { background: #2979ff; }
+.theme-spray { background: #f39c12; }
+.theme-harvest { background: #e74c3c; }
 
-    /* Grid for Trays (เลขถาด 1 to 30) */
-    .tray-selector-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      background: white;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #dcdcdc;
-    }
-    .tray-btn {
-      padding: 6px 2px;
-      text-align: center;
-      font-size: 0.82rem;
-      border-radius: 4px;
-      background: #f8f9fa;
-      border: 1px solid #e0e0e0;
-      cursor: pointer;
-      user-select: none;
-    }
-    .tray-btn.active {
-      background: #c8e6c9;
-      border-color: #087f43;
-      color: #087f43;
-      font-weight: 600;
-    }
+/* Form Content Body */
+.form-body {
+padding: 14px;
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+.field-group { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 0.82rem; color: #666; font-weight: 500; }
 
-    /* Two-Column Grid for Fertilizer */
-    .grid-2col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+/* Clean Inputs like Draft */
+input, select, textarea {
+width: 100%;
+background: #ffffff;
+border: 1px solid #dcdcdc;
+border-radius: 6px;
+padding: 8px 12px;
+font-size: 0.92rem;
+outline: none;
+color: #333;
+}
+input:focus, select:focus, textarea:focus {
+border-color: #087f43;
+}
 
-    /* Dynamic Bed Split Rows */
-    .bed-item-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .bed-item-row select { flex: 2; }
-    .bed-item-row input { flex: 1; text-align: center; }
+/* Grid for Trays (เลขถาด 1 to 30) */
+.tray-selector-grid {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 6px;
+background: white;
+padding: 8px;
+border-radius: 8px;
+border: 1px solid #dcdcdc;
+}
+.tray-btn {
+padding: 6px 2px;
+text-align: center;
+font-size: 0.82rem;
+border-radius: 4px;
+background: #f8f9fa;
+border: 1px solid #e0e0e0;
+cursor: pointer;
+user-select: none;
+}
+.tray-btn.active {
+background: #c8e6c9;
+border-color: #087f43;
+color: #087f43;
+font-weight: 600;
+}
 
-    /* Bottom Green Submit Button */
-    .btn-submit-action {
-      background: #007336;
-      color: white;
-      border: none;
-      padding: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: auto;
-      text-align: center;
-    }
-    .btn-submit-action:hover { opacity: 0.92; }
+/* Two-Column Grid for Fertilizer */
+.grid-2col {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px;
+}
 
-    /* Main Menu Screen */
-    .menu-container {
-      padding: 20px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .menu-button-card {
-      background: white;
-      border-radius: 10px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-      border: 1px solid #e0e0e0;
-      transition: transform 0.1s;
-    }
-    .menu-button-card:hover { transform: translateY(-2px); }
-    .menu-button-card .info { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1rem; }
-    .menu-button-card .icon-circle {
-      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;
-    }
+/* Dynamic Bed Split Rows */
+.bed-item-row {
+display: flex;
+gap: 6px;
+align-items: center;
+margin-bottom: 6px;
+}
+.bed-item-row select { flex: 2; }
+.bed-item-row input { flex: 1; text-align: center; }
 
-    /* Loading Overlay */
-    .loader-backdrop {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.3);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 9999; visibility: hidden;
-    }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 4px solid #fff;
-      border-top-color: #087f43;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
+/* Bottom Green Submit Button */
+.btn-submit-action {
+background: #007336;
+color: white;
+border: none;
+padding: 12px;
+font-size: 1rem;
+font-weight: 600;
+border-radius: 6px;
+cursor: pointer;
+margin-top: auto;
+text-align: center;
+}
+.btn-submit-action:hover { opacity: 0.92; }
+
+/* Main Menu Screen */
+.menu-container {
+padding: 20px 14px;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+.menu-button-card {
+background: white;
+border-radius: 10px;
+padding: 16px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+cursor: pointer;
+box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+border: 1px solid #e0e0e0;
+transition: transform 0.1s;
+}
+.menu-button-card:hover { transform: translateY(-2px); }
+.menu-button-card .info { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1rem; }
+.menu-button-card .icon-circle {
+width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;
+}
+
+/* Loading Overlay */
+.loader-backdrop {
+position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0,0,0,0.3);
+display: flex; justify-content: center; align-items: center;
+z-index: 9999; visibility: hidden;
+}
+.spinner {
+width: 40px; height: 40px;
+border: 4px solid #fff;
+border-top-color: #087f43;
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
 
-  <div class="loader-backdrop" id="loader">
-    <div class="spinner"></div>
-  </div>
+<div class="loader-backdrop" id="loader">
+<div class="spinner"></div>
+</div>
 
-  <div class="app-phone">
-    
-    <!-- Top Global Header -->
-    <div class="app-header">
-      <div class="brand">🌱 เขาเขียวฟาร์มผัก</div>
-      <div class="user-badge">
-        <span id="txtUserName">User</span>
-        <button class="btn-exit" onclick="handleLogout()" title="ออกจากระบบ">↩</button>
-      </div>
-    </div>
+<div class="app-phone">
 
-    <!-- 0. SIGN IN PAGE -->
-    <div id="pageSignIn" style="display: none; padding: 24px 16px;">
-      <h3 style="margin-bottom: 16px; color: #087f43;">🔐 เข้าสู่ระบบ (ครั้งแรก)</h3>
-      <div class="field-group" style="margin-bottom: 12px;">
-        <label class="field-label">เลือกรหัสพนักงาน</label>
-        <select id="selStaff" onchange="onSelectStaffChange()">
-          <option value="">-- กรุณาเลือก --</option>
-        </select>
-      </div>
-      <div class="field-group" style="margin-bottom: 12px;">
-        <label class="field-label">รหัสพนักงาน</label>
-        <input type="text" id="txtStaffId" placeholder="เช่น W01">
-      </div>
-      <div class="field-group" style="margin-bottom: 20px;">
-        <label class="field-label">ชื่อพนักงาน</label>
-        <input type="text" id="txtStaffName" placeholder="เช่น Lek, Ti">
-      </div>
-      <button class="btn-submit-action" onclick="signIn()">เข้าสู่ระบบ</button>
-    </div>
+<!-- Top Global Header -->
+<div class="app-header">
+<div class="brand">🌱 เขาเขียวฟาร์มผัก</div>
+<div class="user-badge">
+<span id="txtUserName">User</span>
+<button class="btn-exit" onclick="handleLogout()" title="ออกจากระบบ">↩</button>
+</div>
+</div>
 
-    <!-- 1. MAIN MENU -->
-    <div id="pageMenu" style="display: none;" class="menu-container">
-      <div class="menu-button-card" onclick="openForm('pageSowing')">
-        <div class="info">
-          <div class="icon-circle" style="background: #e84393;">🌱</div>
-          <span>เพาะเมล็ด</span>
-        </div>
-        <span>➔</span>
-      </div>
+<!-- 0. SIGN IN PAGE -->
+<div id="pageSignIn" style="display: none; padding: 24px 16px;">
+<h3 style="margin-bottom: 16px; color: #087f43;">🔐 เข้าสู่ระบบ (ครั้งแรก)</h3>
+<div class="field-group" style="margin-bottom: 12px;">
+<label class="field-label">เลือกรหัสพนักงาน</label>
+<select id="selStaff" onchange="onSelectStaffChange()">
+<option value="">-- กรุณาเลือก --</option>
+</select>
+</div>
+<div class="field-group" style="margin-bottom: 12px;">
+<label class="field-label">รหัสพนักงาน</label>
+<input type="text" id="txtStaffId" placeholder="เช่น W01">
+</div>
+<div class="field-group" style="margin-bottom: 20px;">
+<label class="field-label">ชื่อพนักงาน</label>
+<input type="text" id="txtStaffName" placeholder="เช่น Lek, Ti">
+</div>
+<button class="btn-submit-action" onclick="signIn()">เข้าสู่ระบบ</button>
+</div>
 
-      <div class="menu-button-card" onclick="openForm('pagePlant')">
-        <div class="info">
-          <div class="icon-circle" style="background: #00b060;">🪴</div>
-          <span>ปลูก (อนุบาล/แปลงปลูก)</span>
-        </div>
-        <span>➔</span>
-      </div>
+<!-- 1. MAIN MENU -->
+<div id="pageMenu" style="display: none;" class="menu-container">
+<div class="menu-button-card" onclick="openForm('pageSowing')">
+<div class="info">
+<div class="icon-circle" style="background: #e84393;">🌱</div>
+<span>เพาะเมล็ด</span>
+</div>
+<span>➔</span>
+</div>
 
-      <div class="menu-button-card" onclick="openForm('pageFert')">
-        <div class="info">
-          <div class="icon-circle" style="background: #2979ff;">🧪</div>
-          <span>เติมปุ๋ย</span>
-        </div>
-        <span>➔</span>
-      </div>
+<div class="menu-button-card" onclick="openForm('pagePlant')">
+<div class="info">
+<div class="icon-circle" style="background: #00b060;">🪴</div>
+<span>ปลูก (อนุบาล/แปลงปลูก)</span>
+</div>
+<span>➔</span>
+</div>
 
-      <div class="menu-button-card" onclick="openForm('pageSpray')">
-        <div class="info">
-          <div class="icon-circle" style="background: #f39c12;">🚜</div>
-          <span>พ่นปุ๋ย/ยา</span>
-        </div>
-        <span>➔</span>
-      </div>
+<div class="menu-button-card" onclick="openForm('pageFert')">
+<div class="info">
+<div class="icon-circle" style="background: #2979ff;">🧪</div>
+<span>เติมปุ๋ย</span>
+</div>
+<span>➔</span>
+</div>
 
-      <div class="menu-button-card" onclick="openForm('pageHarvest')">
-        <div class="info">
-          <div class="icon-circle" style="background: #e74c3c;">🍄</div>
-          <span>เก็บเกี่ยว</span>
-        </div>
-        <span>➔</span>
-      </div>
-    </div>
+<div class="menu-button-card" onclick="openForm('pageSpray')">
+<div class="info">
+<div class="icon-circle" style="background: #f39c12;">🚜</div>
+<span>พ่นปุ๋ย/ยา</span>
+</div>
+<span>➔</span>
+</div>
 
-    <!-- 2. FORM: เพาะ (Sowing) -->
-    <div id="pageSowing" style="display: none; flex: 1; flex-direction: column;">
-      <div class="sub-header theme-sow">
-        <div class="title-group">🌱 เพาะ</div>
-        <div class="clock live-clock">--:--:--</div>
-        <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
-      </div>
-      <div class="form-body">
-        <div class="field-group">
-          <label class="field-label">ชนิดผัก</label>
-          <select id="sowVegSelect"></select>
-        </div>
-        <div class="field-group">
-          <label class="field-label">เลขถาด (เลือกได้หลายถาด)</label>
-          <div class="tray-selector-grid" id="sowTrayGrid"></div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">หมายเหตุ</label>
-          <textarea id="sowNote" rows="3" placeholder="ระบุเพิ่มเติม"></textarea>
-        </div>
-        <button class="btn-submit-action" onclick="submitSowing()">บันทึก</button>
-      </div>
-    </div>
+<div class="menu-button-card" onclick="openForm('pageHarvest')">
+<div class="info">
+<div class="icon-circle" style="background: #e74c3c;">🍄</div>
+<span>เก็บเกี่ยว</span>
+</div>
+<span>➔</span>
+</div>
+</div>
 
-    <!-- 3. FORM: ปลูก (Plant) -->
-    <div id="pagePlant" style="display: none; flex: 1; flex-direction: column;">
-      <div class="sub-header theme-plant">
-        <div class="title-group">🪴 ปลูก</div>
-        <div class="clock live-clock">--:--:--</div>
-        <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
-      </div>
-      <div class="form-body">
-        <div class="field-group">
-          <label class="field-label">ขั้นตอนปลูก</label>
-          <select id="plantStepSelect" onchange="onPlantStepChanged()">
-            <option value="อนุบาล 1">อนุบาล 1</option>
-            <option value="อนุบาล 2">อนุบาล 2</option>
-            <option value="ปลูก">ปลูก</option>
-          </select>
-        </div>
-        <div class="field-group">
-          <label class="field-label">ย้ายมาจาก</label>
-          <select id="plantSourceSelect"></select>
-        </div>
-        <div class="field-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <label class="field-label">ลงแปลง / จำนวน (ต้น)</label>
-            <a href="javascript:void(0)" onclick="addPlantBedRow()" style="font-size: 0.8rem; color: #087f43; text-decoration: none;">+ เพิ่มแปลง</a>
-          </div>
-          <div id="plantBedsContainer"></div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">หมายเหตุ</label>
-          <textarea id="plantNote" rows="2"></textarea>
-        </div>
-        <button class="btn-submit-action" onclick="submitPlant()">บันทึก</button>
-      </div>
-    </div>
+<!-- 2. FORM: เพาะ (Sowing) -->
+<div id="pageSowing" style="display: none; flex: 1; flex-direction: column;">
+<div class="sub-header theme-sow">
+<div class="title-group">🌱 เพาะ</div>
+<div class="clock live-clock">--:--:--</div>
+<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+</div>
+<div class="form-body">
+<div class="field-group">
+<label class="field-label">ชนิดผัก</label>
+<select id="sowVegSelect"></select>
+</div>
+<div class="field-group">
+<label class="field-label">เลขถาด (เลือกได้หลายถาด)</label>
+<div class="tray-selector-grid" id="sowTrayGrid"></div>
+</div>
+<div class="field-group">
+<label class="field-label">หมายเหตุ</label>
+<textarea id="sowNote" rows="3" placeholder="ระบุเพิ่มเติม"></textarea>
+</div>
+<button class="btn-submit-action" onclick="submitSowing()">บันทึก</button>
+</div>
+</div>
 
-    <!-- 4. FORM: เติมปุ๋ย (Fertilizer) -->
-    <div id="pageFert" style="display: none; flex: 1; flex-direction: column;">
-      <div class="sub-header theme-fert">
-        <div class="title-group">🧪 เติมปุ๋ย</div>
-        <div class="clock live-clock">--:--:--</div>
-        <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
-      </div>
-      <div class="form-body">
-        <div class="field-group">
-          <label class="field-label">ชื่อแปลง</label>
-          <select id="fertBedSelect"></select>
-        </div>
-        <div class="field-group">
-          <label class="field-label">ชนิดปุ๋ย</label>
-          <select id="fertTypeSelect"></select>
-        </div>
-        <div class="grid-2col">
-          <div class="field-group">
-            <label class="field-label">ค่าปุ๋ย-ก่อนเติม</label>
-            <input type="number" step="0.1" id="fertEcBefore">
-          </div>
-          <div class="field-group">
-            <label class="field-label">ระดับน้ำ-ก่อนเติม</label>
-            <input type="number" id="fertWaterBefore">
-          </div>
-          <div class="field-group">
-            <label class="field-label">ปริมาณที่เติม</label>
-            <input type="number" id="fertAmount">
-          </div>
-          <div class="field-group">
-            <label class="field-label">ค่า pH</label>
-            <input type="number" step="0.1" id="fertPh">
-          </div>
-          <div class="field-group">
-            <label class="field-label">ค่าปุ๋ย-หลังเติม</label>
-            <input type="number" step="0.1" id="fertEcAfter">
-          </div>
-          <div class="field-group">
-            <label class="field-label">ระดับน้ำ-หลังเติม</label>
-            <input type="number" id="fertWaterAfter">
-          </div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">หมายเหตุ</label>
-          <textarea id="fertNote" rows="2"></textarea>
-        </div>
-        <button class="btn-submit-action" onclick="submitFertilizer()">บันทึก</button>
-      </div>
-    </div>
+<!-- 3. FORM: ปลูก (Plant) -->
+<div id="pagePlant" style="display: none; flex: 1; flex-direction: column;">
+<div class="sub-header theme-plant">
+<div class="title-group">🪴 ปลูก</div>
+<div class="clock live-clock">--:--:--</div>
+<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+</div>
+<div class="form-body">
+<div class="field-group">
+<label class="field-label">ขั้นตอนปลูก</label>
+<select id="plantStepSelect" onchange="onPlantStepChanged()">
+<option value="อนุบาล 1">อนุบาล 1</option>
+<option value="อนุบาล 2">อนุบาล 2</option>
+<option value="ปลูก">ปลูก</option>
+</select>
+</div>
+<div class="field-group">
+<label class="field-label">ย้ายมาจาก</label>
+<select id="plantSourceSelect"></select>
+</div>
+<div class="field-group">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+<label class="field-label">ลงแปลง / จำนวน (ต้น)</label>
+<a href="javascript:void(0)" onclick="addPlantBedRow()" style="font-size: 0.8rem; color: #087f43; text-decoration: none;">+ เพิ่มแปลง</a>
+</div>
+<div id="plantBedsContainer"></div>
+</div>
+<div class="field-group">
+<label class="field-label">หมายเหตุ</label>
+<textarea id="plantNote" rows="2"></textarea>
+</div>
+<button class="btn-submit-action" onclick="submitPlant()">บันทึก</button>
+</div>
+</div>
 
-    <!-- 5. FORM: พ่นปุ๋ยและยา (Spray) -->
-    <div id="pageSpray" style="display: none; flex: 1; flex-direction: column;">
-      <div class="sub-header theme-spray">
-        <div class="title-group">🚜 พ่นปุ๋ย/ยา</div>
-        <div class="clock live-clock">--:--:--</div>
-        <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
-      </div>
-      <div class="form-body">
-        <div class="field-group">
-          <label class="field-label">เลขถัง (ถังที่รอพ่น)</label>
-          <select id="sprayTankSelect" onchange="onSprayTankSelectChange()"></select>
-        </div>
-        <div id="sprayTankInfo" style="font-size: 0.8rem; background: white; padding: 8px; border-radius: 6px; border: 1px solid #ddd; display: none;">
-          <div>สูตร: <b id="lblTankFormula">-</b></div>
-          <div>เป้าหมาย: โรง <b id="lblTankGH">-</b> | แปลง <b id="lblTankBed">-</b></div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">พ่นที่ (โรง/แปลงจริงที่พ่น)</label>
-          <input type="text" id="sprayLocation" placeholder="เช่น โรง 1 แปลง 1A, 1B">
-        </div>
-        <div class="field-group">
-          <label class="field-label">หมายเหตุ</label>
-          <textarea id="sprayNote" rows="2"></textarea>
-        </div>
-        <button class="btn-submit-action" onclick="submitSpray()">บันทึก</button>
-      </div>
-    </div>
+<!-- 4. FORM: เติมปุ๋ย (Fertilizer) -->
+<div id="pageFert" style="display: none; flex: 1; flex-direction: column;">
+<div class="sub-header theme-fert">
+<div class="title-group">🧪 เติมปุ๋ย</div>
+<div class="clock live-clock">--:--:--</div>
+<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+</div>
+<div class="form-body">
+<div class="field-group">
+<label class="field-label">ชื่อแปลง</label>
+<select id="fertBedSelect"></select>
+</div>
+<div class="field-group">
+<label class="field-label">ชนิดปุ๋ย</label>
+<select id="fertTypeSelect"></select>
+</div>
+<div class="grid-2col">
+<div class="field-group">
+<label class="field-label">ค่าปุ๋ย-ก่อนเติม</label>
+<input type="number" step="0.1" id="fertEcBefore">
+</div>
+<div class="field-group">
+<label class="field-label">ระดับน้ำ-ก่อนเติม</label>
+<input type="number" id="fertWaterBefore">
+</div>
+<div class="field-group">
+<label class="field-label">ปริมาณที่เติม</label>
+<input type="number" id="fertAmount">
+</div>
+<div class="field-group">
+<label class="field-label">ค่า pH</label>
+<input type="number" step="0.1" id="fertPh">
+</div>
+<div class="field-group">
+<label class="field-label">ค่าปุ๋ย-หลังเติม</label>
+<input type="number" step="0.1" id="fertEcAfter">
+</div>
+<div class="field-group">
+<label class="field-label">ระดับน้ำ-หลังเติม</label>
+<input type="number" id="fertWaterAfter">
+</div>
+</div>
+<div class="field-group">
+<label class="field-label">หมายเหตุ</label>
+<textarea id="fertNote" rows="2"></textarea>
+</div>
+<button class="btn-submit-action" onclick="submitFertilizer()">บันทึก</button>
+</div>
+</div>
 
-    <!-- 6. FORM: เก็บเกี่ยว (Harvest - จากแถว 98-112 ใน App_Draft) -->
-    <div id="pageHarvest" style="display: none; flex: 1; flex-direction: column;">
-      <div class="sub-header theme-harvest">
-        <div class="title-group">🍄 เก็บเกี่ยว</div>
-        <div class="clock live-clock">--:--:--</div>
-        <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
-      </div>
-      <div class="form-body">
-        <div class="field-group">
-          <label class="field-label">เก็บจาก (รายการรอเก็บเกี่ยวจากสถานะ)</label>
-          <select id="harvestSelect"></select>
-        </div>
-        <div class="field-group">
-          <label class="field-label">น้ำหนัก (กก.)</label>
-          <input type="number" step="0.01" id="harvestWeight" placeholder="0.00">
-        </div>
-        <div class="field-group">
-          <label class="field-label">หมายเหตุ</label>
-          <textarea id="harvestNote" rows="3" placeholder="ระบุเพิ่มเติม"></textarea>
-        </div>
-        <button class="btn-submit-action" onclick="submitHarvest()">บันทึก</button>
-      </div>
-    </div>
+<!-- 5. FORM: พ่นปุ๋ยและยา (Spray) -->
+<div id="pageSpray" style="display: none; flex: 1; flex-direction: column;">
+<div class="sub-header theme-spray">
+<div class="title-group">🚜 พ่นปุ๋ย/ยา</div>
+<div class="clock live-clock">--:--:--</div>
+<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+</div>
+<div class="form-body">
+<div class="field-group">
+<label class="field-label">เลขถัง (ถังที่รอพ่น)</label>
+<select id="sprayTankSelect" onchange="onSprayTankSelectChange()"></select>
+</div>
+<div id="sprayTankInfo" style="font-size: 0.8rem; background: white; padding: 8px; border-radius: 6px; border: 1px solid #ddd; display: none;">
+<div>สูตร: <b id="lblTankFormula">-</b></div>
+<div>เป้าหมาย: โรง <b id="lblTankGH">-</b> | แปลง <b id="lblTankBed">-</b></div>
+</div>
+<div class="field-group">
+<label class="field-label">พ่นที่ (โรง/แปลงจริงที่พ่น)</label>
+<input type="text" id="sprayLocation" placeholder="เช่น โรง 1 แปลง 1A, 1B">
+</div>
+<div class="field-group">
+<label class="field-label">หมายเหตุ</label>
+<textarea id="sprayNote" rows="2"></textarea>
+</div>
+<button class="btn-submit-action" onclick="submitSpray()">บันทึก</button>
+</div>
+</div>
 
-  </div>
+<!-- 6. FORM: เก็บเกี่ยว (Harvest - จากแถว 98-112 ใน App_Draft) -->
+<div id="pageHarvest" style="display: none; flex: 1; flex-direction: column;">
+<div class="sub-header theme-harvest">
+<div class="title-group">🍄 เก็บเกี่ยว</div>
+<div class="clock live-clock">--:--:--</div>
+<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+</div>
+<div class="form-body">
+<div class="field-group">
+<label class="field-label">เก็บจาก (รายการรอเก็บเกี่ยวจากสถานะ)</label>
+<select id="harvestSelect"></select>
+</div>
+<div class="field-group">
+<label class="field-label">น้ำหนัก (กก.)</label>
+<input type="number" step="0.01" id="harvestWeight" placeholder="0.00">
+</div>
+<div class="field-group">
+<label class="field-label">หมายเหตุ</label>
+<textarea id="harvestNote" rows="3" placeholder="ระบุเพิ่มเติม"></textarea>
+</div>
+<button class="btn-submit-action" onclick="submitHarvest()">บันทึก</button>
+</div>
+</div>
 
-  <script>
-    // =======================================================
-    // นำ Web App URL ที่ได้จาก Apps Script มาวางที่นี่
-    // =======================================================
+</div>
+
+<script>
+// =======================================================
+// นำ Web App URL ที่ได้จาก Apps Script มาวางที่นี่
+// =======================================================
 
 const GAS_API_URL = "https://script.google.com/macros/s/AKfycbztM3MTfSU9nCZreyj0SDvk09YsoEsQtbM39hI6S5SVTCuTybvCAE1Eh61O3Us_AOCwHQ/exec";
 
-    let currentUser = null;
-    let masterData = {};
-    let staffList = [];
-    let selectedTrays = [];
-    let unsprayedTanks = [];
+let currentUser = null;
+let masterData = {};
+let staffList = [];
+let selectedTrays = [];
+let unsprayedTanks = [];
 
-    function setLoader(show) {
-      document.getElementById('loader').style.visibility = show ? 'visible' : 'hidden';
-    }
+function setLoader(show) {
+document.getElementById('loader').style.visibility = show ? 'visible' : 'hidden';
+}
 
-    // ฟังก์ชันยิง API แบบ text/plain ป้องกันปัญหา CORS Failed to fetch 100%
-    async function apiRequest(action, payload = {}) {
-      if (!GAS_API_URL || GAS_API_URL.includes("YOUR_APPS_SCRIPT")) {
-        alert("กรุณานำ Web App URL จาก Google Apps Script มาใส่ในตัวแปร GAS_API_URL ก่อนครับ");
-        throw new Error("Missing GAS_API_URL");
-      }
-      try {
-        const response = await fetch(GAS_API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: action, payload: payload })
-        });
-        const res = await response.json();
-        if (res.status === 'success') {
-          return res.data;
-        } else {
-          throw new Error(res.message || 'API error');
-        }
-      } catch (err) {
-        alert('เกิดข้อผิดพลาดในการเชื่อมต่อ Google Sheet: ' + err.message);
-        throw err;
-      }
-    }
+// ฟังก์ชันยิง API แบบ text/plain ป้องกันปัญหา CORS Failed to fetch 100%
+async function apiRequest(action, payload = {}) {
+if (!GAS_API_URL || GAS_API_URL.includes("YOUR_APPS_SCRIPT")) {
+alert("กรุณานำ Web App URL จาก Google Apps Script มาใส่ในตัวแปร GAS_API_URL ก่อนครับ");
+throw new Error("Missing GAS_API_URL");
+}
+try {
+const response = await fetch(GAS_API_URL, {
+method: 'POST',
+headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+body: JSON.stringify({ action: action, payload: payload })
+});
+const res = await response.json();
+if (res.status === 'success') {
+return res.data;
+} else {
+throw new Error(res.message || 'API error');
+}
+} catch (err) {
+alert('เกิดข้อผิดพลาดในการเชื่อมต่อ Google Sheet: ' + err.message);
+throw err;
+}
+}
 
-    // Live Clock Display
-    function updateClock() {
-      const now = new Date();
-      const d = String(now.getDate()).padStart(2, '0');
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const y = now.getFullYear();
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      const formatted = `${d}/${m}/${y} ${hh}:${mm}`;
-      document.querySelectorAll('.live-clock').forEach(el => el.innerText = formatted);
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+// Live Clock Display
+function updateClock() {
+const now = new Date();
+const d = String(now.getDate()).padStart(2, '0');
+const m = String(now.getMonth() + 1).padStart(2, '0');
+const y = now.getFullYear();
+const hh = String(now.getHours()).padStart(2, '0');
+const mm = String(now.getMinutes()).padStart(2, '0');
+const formatted = `${d}/${m}/${y} ${hh}:${mm}`;
+document.querySelectorAll('.live-clock').forEach(el => el.innerText = formatted);
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-    window.onload = function() {
-      const saved = localStorage.getItem('farm_user');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        document.getElementById('txtUserName').innerText = `${currentUser.name} (${currentUser.id})`;
-        loadInitialData();
-        showScreen('pageMenu');
-      } else {
-        loadStaff();
-      }
-    };
+window.onload = function() {
+const saved = localStorage.getItem('farm_user');
+if (saved) {
+currentUser = JSON.parse(saved);
+document.getElementById('txtUserName').innerText = `${currentUser.name} (${currentUser.id})`;
+loadInitialData();
+showScreen('pageMenu');
+} else {
+loadStaff();
+}
+};
 
-    function showScreen(id) {
-      const screens = ['pageSignIn', 'pageMenu', 'pageSowing', 'pagePlant', 'pageFert', 'pageSpray', 'pageHarvest'];
-      screens.forEach(s => {
-        const el = document.getElementById(s);
-        if (s === id) {
-          el.style.display = (s === 'pageMenu' || s === 'pageSignIn') ? 'flex' : 'flex';
-        } else {
-          el.style.display = 'none';
-        }
-      });
-    }
+function showScreen(id) {
+const screens = ['pageSignIn', 'pageMenu', 'pageSowing', 'pagePlant', 'pageFert', 'pageSpray', 'pageHarvest'];
+screens.forEach(s => {
+const el = document.getElementById(s);
+if (s === id) {
+el.style.display = (s === 'pageMenu' || s === 'pageSignIn') ? 'flex' : 'flex';
+} else {
+el.style.display = 'none';
+}
+});
+}
 
-    function backToMenu() {
-      showScreen('pageMenu');
-    }
+function backToMenu() {
+showScreen('pageMenu');
+}
 
-    function handleLogout() {
-      if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
-        localStorage.removeItem('farm_user');
-        currentUser = null;
-        loadStaff();
-      }
-    }
+function handleLogout() {
+if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+localStorage.removeItem('farm_user');
+currentUser = null;
+loadStaff();
+}
+}
 
-    async function loadStaff() {
-      setLoader(true);
-      try {
-        staffList = await apiRequest('getStaffList');
-        const sel = document.getElementById('selStaff');
-        sel.innerHTML = '<option value="">-- กรุณาเลือก --</option>';
-        staffList.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`);
-        showScreen('pageSignIn');
-      } finally {
-        setLoader(false);
-      }
-    }
+async function loadStaff() {
+setLoader(true);
+try {
+staffList = await apiRequest('getStaffList');
+const sel = document.getElementById('selStaff');
+sel.innerHTML = '<option value="">-- กรุณาเลือก --</option>';
+staffList.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`);
+showScreen('pageSignIn');
+} finally {
+setLoader(false);
+}
+}
 
-    function onSelectStaffChange() {
-      const id = document.getElementById('selStaff').value;
-      const found = staffList.find(s => s.id === id);
-      if (found) {
-        document.getElementById('txtStaffId').value = found.id;
-        document.getElementById('txtStaffName').value = found.name;
-      }
-    }
+function onSelectStaffChange() {
+const id = document.getElementById('selStaff').value;
+const found = staffList.find(s => s.id === id);
+if (found) {
+document.getElementById('txtStaffId').value = found.id;
+document.getElementById('txtStaffName').value = found.name;
+}
+}
 
-    function signIn() {
-      const id = document.getElementById('txtStaffId').value.trim();
-      const name = document.getElementById('txtStaffName').value.trim();
-      if (!id || !name) {
-        alert('กรุณากรอกรหัสและชื่อ');
-        return;
-      }
-      currentUser = { id: id, name: name };
-      localStorage.setItem('farm_user', JSON.stringify(currentUser));
-      document.getElementById('txtUserName').innerText = `${name} (${id})`;
-      loadInitialData();
-      showScreen('pageMenu');
-    }
+function signIn() {
+const id = document.getElementById('txtStaffId').value.trim();
+const name = document.getElementById('txtStaffName').value.trim();
+if (!id || !name) {
+alert('กรุณากรอกรหัสและชื่อ');
+return;
+}
+currentUser = { id: id, name: name };
+localStorage.setItem('farm_user', JSON.stringify(currentUser));
+document.getElementById('txtUserName').innerText = `${name} (${id})`;
+loadInitialData();
+showScreen('pageMenu');
+}
 
-    async function loadInitialData() {
-      setLoader(true);
-      try {
-        masterData = await apiRequest('getInitialData');
-        initSowingTrays();
-        // Dropdown ชนิดผัก
-        const vegSel = document.getElementById('sowVegSelect');
-        vegSel.innerHTML = '';
-        masterData.vegetables.forEach(v => vegSel.innerHTML += `<option value="${v}">${v}</option>`);
+async function loadInitialData() {
+setLoader(true);
+try {
+masterData = await apiRequest('getInitialData');
+initSowingTrays();
+// Dropdown ชนิดผัก
+const vegSel = document.getElementById('sowVegSelect');
+vegSel.innerHTML = '';
+masterData.vegetables.forEach(v => vegSel.innerHTML += `<option value="${v}">${v}</option>`);
 
-        // Dropdown ปุ๋ย
-        const fertSel = document.getElementById('fertTypeSelect');
-        fertSel.innerHTML = '';
-        masterData.fertilizers.forEach(f => fertSel.innerHTML += `<option value="${f}">${f}</option>`);
+// Dropdown ปุ๋ย
+const fertSel = document.getElementById('fertTypeSelect');
+fertSel.innerHTML = '';
+masterData.fertilizers.forEach(f => fertSel.innerHTML += `<option value="${f}">${f}</option>`);
 
-        // Dropdown แปลงเติมปุ๋ย
-        const fertBedSel = document.getElementById('fertBedSelect');
-        fertBedSel.innerHTML = '';
-        const allBeds = [...new Set([...masterData.nur1Beds, ...masterData.nur2Beds, ...masterData.plantBeds])];
-        allBeds.forEach(b => fertBedSel.innerHTML += `<option value="${b}">${b}</option>`);
-      } finally {
-        setLoader(false);
-      }
-    }
+// Dropdown แปลงเติมปุ๋ย
+const fertBedSel = document.getElementById('fertBedSelect');
+fertBedSel.innerHTML = '';
+const allBeds = [...new Set([...masterData.nur1Beds, ...masterData.nur2Beds, ...masterData.plantBeds])];
+allBeds.forEach(b => fertBedSel.innerHTML += `<option value="${b}">${b}</option>`);
+} finally {
+setLoader(false);
+}
+}
 
-    function initSowingTrays() {
-      const grid = document.getElementById('sowTrayGrid');
-      grid.innerHTML = '';
-      selectedTrays = [];
-      const trayList = masterData.trays.length > 0 ? masterData.trays : Array.from({length: 30}, (_, i) => String(i + 1));
-      trayList.forEach(t => {
-        const btn = document.createElement('div');
-        btn.className = 'tray-btn';
-        btn.innerText = t;
-        btn.onclick = function() {
-          if (btn.classList.contains('active')) {
-            btn.classList.remove('active');
-            selectedTrays = selectedTrays.filter(x => x !== t);
-          } else {
-            btn.classList.add('active');
-            selectedTrays.push(t);
-          }
-        };
-        grid.appendChild(btn);
-      });
-    }
+function initSowingTrays() {
+const grid = document.getElementById('sowTrayGrid');
+grid.innerHTML = '';
+selectedTrays = [];
+const trayList = masterData.trays.length > 0 ? masterData.trays : Array.from({length: 30}, (_, i) => String(i + 1));
+trayList.forEach(t => {
+const btn = document.createElement('div');
+btn.className = 'tray-btn';
+btn.innerText = t;
+btn.onclick = function() {
+if (btn.classList.contains('active')) {
+btn.classList.remove('active');
+selectedTrays = selectedTrays.filter(x => x !== t);
+} else {
+btn.classList.add('active');
+selectedTrays.push(t);
+}
+};
+grid.appendChild(btn);
+});
+}
 
-    function openForm(formId) {
-      showScreen(formId);
-      if (formId === 'pagePlant') onPlantStepChanged();
-      if (formId === 'pageSpray') loadSprayTanks();
-      if (formId === 'pageHarvest') loadHarvestList();
-    }
+function openForm(formId) {
+showScreen(formId);
+if (formId === 'pagePlant') onPlantStepChanged();
+if (formId === 'pageSpray') loadSprayTanks();
+if (formId === 'pageHarvest') loadHarvestList();
+}
 
-    // --- 1. เพาะ ---
-    async function submitSowing() {
-      if (selectedTrays.length === 0) {
-        alert('กรุณาเลือกเลขถาดเพาะ');
-        return;
-      }
-      setLoader(true);
-      try {
-        const res = await apiRequest('saveSowing', {
-          user: currentUser.name,
-          vegetable: document.getElementById('sowVegSelect').value,
-          trays: selectedTrays,
-          note: document.getElementById('sowNote').value
-        });
-        alert(`บันทึกเพาะเมล็ดสำเร็จ (${res.count} ถาด)`);
-        document.getElementById('sowNote').value = '';
-        initSowingTrays();
-        backToMenu();
-      } finally {
-        setLoader(false);
-      }
-    }
+// --- 1. เพาะ ---
+async function submitSowing() {
+if (selectedTrays.length === 0) {
+alert('กรุณาเลือกเลขถาดเพาะ');
+return;
+}
+setLoader(true);
+try {
+const res = await apiRequest('saveSowing', {
+user: currentUser.name,
+vegetable: document.getElementById('sowVegSelect').value,
+trays: selectedTrays,
+note: document.getElementById('sowNote').value
+});
+alert(`บันทึกเพาะเมล็ดสำเร็จ (${res.count} ถาด)`);
+document.getElementById('sowNote').value = '';
+initSowingTrays();
+backToMenu();
+} finally {
+setLoader(false);
+}
+}
 
-    // --- 2. ปลูก / แยกแปลง ---
-    async function onPlantStepChanged() {
-      const step = document.getElementById('plantStepSelect').value;
-      setLoader(true);
-      try {
-        const items = await apiRequest('getPendingPlantings', { step: step });
-        const sel = document.getElementById('plantSourceSelect');
-        sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
-        items.forEach(it => {
-          sel.innerHTML += `<option value="${it.refId}">${it.refId} | ${it.veg} (แปลง/ถาดเดิม: ${it.trayOrBed}, อายุ: ${it.age} วัน)</option>`;
-        });
-        document.getElementById('plantBedsContainer').innerHTML = '';
-        addPlantBedRow();
-      } finally {
-        setLoader(false);
-      }
-    }
+// --- 2. ปลูก / แยกแปลง ---
+async function onPlantStepChanged() {
+const step = document.getElementById('plantStepSelect').value;
+setLoader(true);
+try {
+const items = await apiRequest('getPendingPlantings', { step: step });
+const sel = document.getElementById('plantSourceSelect');
+sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
+items.forEach(it => {
+sel.innerHTML += `<option value="${it.refId}"> รายการ: ${it.refId} | ${it.veg} (แปลง : ${it.trayOrBed}, อายุ: ${it.age} วัน)</option>`;
+});
+document.getElementById('plantBedsContainer').innerHTML = '';
+addPlantBedRow();
+} finally {
+setLoader(false);
+}
+}
 
-    function addPlantBedRow() {
-      const step = document.getElementById('plantStepSelect').value;
-      let bedOptions = masterData.plantBeds;
-      if (step === 'อนุบาล 1') bedOptions = masterData.nur1Beds;
-      else if (step === 'อนุบาล 2') bedOptions = masterData.nur2Beds;
+function addPlantBedRow() {
+const step = document.getElementById('plantStepSelect').value;
+let bedOptions = masterData.plantBeds;
+if (step === 'อนุบาล 1') bedOptions = masterData.nur1Beds;
+else if (step === 'อนุบาล 2') bedOptions = masterData.nur2Beds;
 
-      const container = document.getElementById('plantBedsContainer');
-      const div = document.createElement('div');
-      div.className = 'bed-item-row';
-      const optHtml = bedOptions.map(b => `<option value="${b}">${b}</option>`).join('');
-      div.innerHTML = `
-        <select class="p-bed">${optHtml}</select>
-        <input type="number" class="p-count" placeholder="จำนวน" value="30">
-        <button type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;" onclick="this.parentElement.remove()">✕</button>
-      `;
-      container.appendChild(div);
-    }
+const container = document.getElementById('plantBedsContainer');
+const div = document.createElement('div');
+div.className = 'bed-item-row';
+const optHtml = bedOptions.map(b => `<option value="${b}">${b}</option>`).join('');
+div.innerHTML = `
+<select class="p-bed">${optHtml}</select>
+<input type="number" class="p-count" placeholder="จำนวน" value="30">
+<button type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;" onclick="this.parentElement.remove()">✕</button>
+`;
+container.appendChild(div);
+}
 
-    async function submitPlant() {
-      const refId = document.getElementById('plantSourceSelect').value;
-      if (!refId) {
-        alert('กรุณาเลือกรายการ');
-        return;
-      }
-      const rows = document.querySelectorAll('.bed-item-row');
-      const beds = [];
-      rows.forEach(r => {
-        beds.push({
-          bedName: r.querySelector('.p-bed').value,
-          count: r.querySelector('.p-count').value
-        });
-      });
-      if (beds.length === 0) {
-        alert('กรุณาเพิ่มแปลง');
-        return;
-      }
+async function submitPlant() {
+const refId = document.getElementById('plantSourceSelect').value;
+if (!refId) {
+alert('กรุณาเลือกรายการ');
+return;
+}
+const rows = document.querySelectorAll('.bed-item-row');
+const beds = [];
+rows.forEach(r => {
+beds.push({
+bedName: r.querySelector('.p-bed').value,
+count: r.querySelector('.p-count').value
+});
+});
+if (beds.length === 0) {
+alert('กรุณาเพิ่มแปลง');
+return;
+}
 
-      setLoader(true);
-      try {
-        const res = await apiRequest('savePlantStep', {
-          user: currentUser.name,
-          step: document.getElementById('plantStepSelect').value,
-          refId: refId,
-          beds: beds,
-          note: document.getElementById('plantNote').value
-        });
-        alert(`บันทึกเรียบร้อย (${res.count} แถว)`);
-        backToMenu();
-      } finally {
-        setLoader(false);
-      }
-    }
+setLoader(true);
+try {
+const res = await apiRequest('savePlantStep', {
+user: currentUser.name,
+step: document.getElementById('plantStepSelect').value,
+refId: refId,
+beds: beds,
+note: document.getElementById('plantNote').value
+});
+alert(`บันทึกเรียบร้อย (${res.count} แถว)`);
+backToMenu();
+} finally {
+setLoader(false);
+}
+}
 
-    // --- 3. เติมปุ๋ย ---
-    async function submitFertilizer() {
-      setLoader(true);
-      try {
-        await apiRequest('saveFertilizer', {
-          user: currentUser.name,
-          bedName: document.getElementById('fertBedSelect').value,
-          fertilizer: document.getElementById('fertTypeSelect').value,
-          ecBefore: document.getElementById('fertEcBefore').value,
-          waterBefore: document.getElementById('fertWaterBefore').value,
-          ecAfter: document.getElementById('fertEcAfter').value,
-          waterAfter: document.getElementById('fertWaterAfter').value,
-          ph: document.getElementById('fertPh').value,
-          note: document.getElementById('fertNote').value
-        });
-        alert('บันทึกการเติมปุ๋ยเรียบร้อย');
-        backToMenu();
-      } finally {
-        setLoader(false);
-      }
-    }
+// --- 3. เติมปุ๋ย ---
+async function submitFertilizer() {
+setLoader(true);
+try {
+await apiRequest('saveFertilizer', {
+user: currentUser.name,
+bedName: document.getElementById('fertBedSelect').value,
+fertilizer: document.getElementById('fertTypeSelect').value,
+ecBefore: document.getElementById('fertEcBefore').value,
+addAmount :document.getElementById('fertEcBefore').value,
+waterBefore: document.getElementById('fertWaterBefore').value,
+ecAfter: document.getElementById('fertEcAfter').value,
+waterAfter: document.getElementById('fertWaterAfter').value,
+ph: document.getElementById('fertPh').value,
+note: document.getElementById('fertNote').value
+});
+alert('บันทึกการเติมปุ๋ยเรียบร้อย');
+backToMenu();
+} finally {
+setLoader(false);
+}
+}
 
-    // --- 4. พ่นปุ๋ย/ยา ---
-    async function loadSprayTanks() {
-      setLoader(true);
-      try {
-        unsprayedTanks = await apiRequest('getUnsprayedTanks');
-        const sel = document.getElementById('sprayTankSelect');
-        sel.innerHTML = '<option value="">-- เลือกถังที่รอพ่น --</option>';
-        unsprayedTanks.forEach(t => {
-          sel.innerHTML += `<option value="${t.rowIndex}">ถัง ${t.tankNo}: ${t.formula}</option>`;
-        });
-        document.getElementById('sprayTankInfo').style.display = 'none';
-      } finally {
-        setLoader(false);
-      }
-    }
+// --- 4. พ่นปุ๋ย/ยา ---
+async function loadSprayTanks() {
+setLoader(true);
+try {
+unsprayedTanks = await apiRequest('getUnsprayedTanks');
+const sel = document.getElementById('sprayTankSelect');
+sel.innerHTML = '<option value="">-- เลือกถังที่รอพ่น --</option>';
+unsprayedTanks.forEach(t => {
+sel.innerHTML += `<option value="${t.rowIndex}">ถัง ${t.tankNo}: ${t.formula}</option>`;
+});
+document.getElementById('sprayTankInfo').style.display = 'none';
+} finally {
+setLoader(false);
+}
+}
 
-    function onSprayTankSelectChange() {
-      const idx = document.getElementById('sprayTankSelect').value;
-      const found = unsprayedTanks.find(t => String(t.rowIndex) === String(idx));
-      const box = document.getElementById('sprayTankInfo');
-      if (found) {
-        document.getElementById('lblTankFormula').innerText = found.formula;
-        document.getElementById('lblTankGH').innerText = found.targetGreenhouse;
-        document.getElementById('lblTankBed').innerText = found.targetBed;
-        box.style.display = 'block';
-      } else {
-        box.style.display = 'none';
-      }
-    }
+function onSprayTankSelectChange() {
+const idx = document.getElementById('sprayTankSelect').value;
+const found = unsprayedTanks.find(t => String(t.rowIndex) === String(idx));
+const box = document.getElementById('sprayTankInfo');
+if (found) {
+document.getElementById('lblTankFormula').innerText = found.formula;
+document.getElementById('lblTankGH').innerText = found.targetGreenhouse;
+document.getElementById('lblTankBed').innerText = found.targetBed;
+box.style.display = 'block';
+} else {
+box.style.display = 'none';
+}
+}
 
-    async function submitSpray() {
-      const idx = document.getElementById('sprayTankSelect').value;
-      if (!idx) {
-        alert('กรุณาเลือกถัง');
-        return;
-      }
-      setLoader(true);
-      try {
-        await apiRequest('updateSprayRecord', {
-          user: currentUser.name,
-          rowIndex: idx,
-          sprayLocation: document.getElementById('sprayLocation').value
-        });
-        alert('บันทึกการพ่นเรียบร้อย');
-        backToMenu();
-      } finally {
-        setLoader(false);
-      }
-    }
+async function submitSpray() {
+const idx = document.getElementById('sprayTankSelect').value;
+if (!idx) {
+alert('กรุณาเลือกถัง');
+return;
+}
+setLoader(true);
+try {
+await apiRequest('updateSprayRecord', {
+user: currentUser.name,
+rowIndex: idx,
+sprayLocation: document.getElementById('sprayLocation').value
+});
+alert('บันทึกการพ่นเรียบร้อย');
+backToMenu();
+} finally {
+setLoader(false);
+}
+}
 
-    // --- 5. เก็บเกี่ยว ---
-    async function loadHarvestList() {
-      setLoader(true);
-      try {
-        const items = await apiRequest('getPendingPlantings', { step: 'เก็บเกี่ยว' });
-        const sel = document.getElementById('harvestSelect');
-        sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
-        items.forEach(it => {
-          sel.innerHTML += `<option value="${it.refId}">${it.refId} | แปลง: ${it.trayOrBed} | ${it.veg} (อายุ: ${it.age} วัน)</option>`;
-        });
-      } finally {
-        setLoader(false);
-      }
-    }
+// --- 5. เก็บเกี่ยว ---
+async function loadHarvestList() {
+setLoader(true);
+try {
+const items = await apiRequest('getPendingPlantings', { step: 'เก็บเกี่ยว' });
+const sel = document.getElementById('harvestSelect');
+sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
+items.forEach(it => {
+sel.innerHTML += `<option value="${it.refId}">${it.refId} | แปลง: ${it.trayOrBed} | ${it.veg} (อายุ: ${it.age} วัน)</option>`;
+});
+} finally {
+setLoader(false);
+}
+}
 
-    async function submitHarvest() {
-      const refId = document.getElementById('harvestSelect').value;
-      const weight = document.getElementById('harvestWeight').value;
-      if (!refId) {
-        alert('กรุณาเลือกรายการรอเก็บเกี่ยว');
-        return;
-      }
-      if (!weight) {
-        alert('กรุณาระบุน้ำหนัก (กก.)');
-        return;
-      }
+async function submitHarvest() {
+const refId = document.getElementById('harvestSelect').value;
+const weight = document.getElementById('harvestWeight').value;
+if (!refId) {
+alert('กรุณาเลือกรายการรอเก็บเกี่ยว');
+return;
+}
+if (!weight) {
+alert('กรุณาระบุน้ำหนัก (กก.)');
+return;
+}
 
-      setLoader(true);
-      try {
-        await apiRequest('saveHarvest', {
-          user: currentUser.name,
-          refId: refId,
-          weight: weight,
-          note: document.getElementById('harvestNote').value
-        });
-        alert('บันทึกการเก็บเกี่ยวเรียบร้อย');
-        document.getElementById('harvestWeight').value = '';
-        document.getElementById('harvestNote').value = '';
-        backToMenu();
-      } finally {
-        setLoader(false);
-      }
-    }
-  </script>
+setLoader(true);
+try {
+await apiRequest('saveHarvest', {
+user: currentUser.name,
+refId: refId,
+weight: weight,
+note: document.getElementById('harvestNote').value
+});
+alert('บันทึกการเก็บเกี่ยวเรียบร้อย');
+document.getElementById('harvestWeight').value = '';
+document.getElementById('harvestNote').value = '';
+backToMenu();
+} finally {
+setLoader(false);
+}
+}
+</script>
 </body>
 </html>
-
