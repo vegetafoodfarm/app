@@ -534,7 +534,7 @@ window.onload = function() {
 const saved = localStorage.getItem('farm_user');
 if (saved) {
 currentUser = JSON.parse(saved);
-document.getElementById('txtUserName').innerText = `${currentUser.name} (${currentUser.id})`;
+document.getElementById('txtUserName').innerText = `${currentUser.name}`;
 loadInitialData();
 showScreen('pageMenu');
 } else {
