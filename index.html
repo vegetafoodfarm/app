@@ -730,6 +730,8 @@ grid.appendChild(btn);
 });
 }
 
+// -------------------separator--------------------------//
+
 function openForm(formId) {
 showScreen(formId);
 if (formId === 'pagePlant') onPlantStepChanged();
@@ -737,28 +739,38 @@ if (formId === 'pageSpray') loadSprayTanks();
 if (formId === 'pageHarvest') loadHarvestList();
 }
 
+// -------------------separator--------------------------//
+
 // --- 1. เพาะ ---
+
 async function submitSowing() {
-if (selectedTrays.length === 0) {
-alert('กรุณาเลือกเลขถาดเพาะ');
-return;
+  if (selectedTrays.length === 0) {
+    alert('กรุณาเลือกเลขถาดเพาะ');
+    return;
+  }
+  setLoader(true);
+  try {
+    const res = await apiRequest('saveSowing', {
+      user: currentUser.name,
+      vegetable: document.getElementById('sowVegSelect').value,
+      trays: selectedTrays,
+      note: document.getElementById('sowNote').value
+    });
+
+    // Clear 'อนุบาล 1' cache so newly sown trays show up when switching to the Plant page
+    delete appCache.plantings['อนุบาล 1'];
+
+    // Clear note & unselect all tray buttons on the same page
+    document.getElementById('sowNote').value = '';
+    initSowingTrays();
+
+    alert(`บันทึกเพาะเมล็ดสำเร็จ (${res.count} ถาด)`);
+  } finally {
+    setLoader(false);
+  }
 }
-setLoader(true);
-try {
-const res = await apiRequest('saveSowing', {
-user: currentUser.name,
-vegetable: document.getElementById('sowVegSelect').value,
-trays: selectedTrays,
-note: document.getElementById('sowNote').value
-});
-alert(`บันทึกเพาะเมล็ดสำเร็จ (${res.count} ถาด)`);
-document.getElementById('sowNote').value = '';
-initSowingTrays();
-backToMenu();
-} finally {
-setLoader(false);
-}
-}
+
+// -------------------separator--------------------------//
 
 // --- 2. ปลูก / แยกแปลง (Instant Load) ---
 async function onPlantStepChanged() {
@@ -787,6 +799,9 @@ async function onPlantStepChanged() {
   }
 }
 
+
+// -------------------separator--------------------------//
+
 function renderPlantDropdown(sel, items) {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
@@ -795,6 +810,8 @@ function renderPlantDropdown(sel, items) {
   });
   if (currentVal) sel.value = currentVal;
 }
+
+// -------------------separator--------------------------//
 
 function addPlantBedRow() {
   const step = document.getElementById('plantStepSelect').value;
@@ -808,11 +825,13 @@ function addPlantBedRow() {
   const optHtml = bedOptions.map(b => `<option value="${b}">${b}</option>`).join('');
   div.innerHTML = `
     <select class="p-bed">${optHtml}</select>
-    <input type="number" class="p-count" placeholder="จำนวน" value="">
+    <input type="number" class="p-count" placeholder="จำนวน" value="30">
     <button type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;" onclick="this.parentElement.remove()">✕</button>
   `;
   container.appendChild(div);
 }
+
+// -------------------separator--------------------------//
 
 async function submitPlant() {
   const refId = document.getElementById('plantSourceSelect').value;
@@ -843,13 +862,26 @@ async function submitPlant() {
       beds: beds,
       note: document.getElementById('plantNote').value
     });
-    delete appCache.plantings[step]; // Clear cache so completed item disappears
+
+    // 1. Remove the planted item from cache immediately so the dropdown updates without waiting
+    if (appCache.plantings[step]) {
+      appCache.plantings[step] = appCache.plantings[step].filter(
+        it => String(it.refId) !== String(refId)
+      );
+    }
+
+    // 2. Clear note & reset bed rows + dropdown on the same page
+    document.getElementById('plantNote').value = '';
+    onPlantStepChanged();
+
     alert(`บันทึกเรียบร้อย (${res.count} แถว)`);
-    backToMenu();
   } finally {
     setLoader(false);
   }
 }
+
+
+// -------------------separator--------------------------//
 
 // --- 3. เติมปุ๋ย ---
 async function submitFertilizer() {
@@ -860,19 +892,32 @@ async function submitFertilizer() {
       bedName: document.getElementById('fertBedSelect').value,
       fertilizer: document.getElementById('fertTypeSelect').value,
       ecBefore: document.getElementById('fertEcBefore').value,
-      addAmount: document.getElementById('fertEcBefore').value,
+      // Note: Check if your addAmount input has its own ID (e.g., 'fertAddAmount') instead of 'fertEcBefore'
+      addAmount: document.getElementById('fertEcBefore').value, 
       waterBefore: document.getElementById('fertWaterBefore').value,
       ecAfter: document.getElementById('fertEcAfter').value,
       waterAfter: document.getElementById('fertWaterAfter').value,
       ph: document.getElementById('fertPh').value,
       note: document.getElementById('fertNote').value
     });
+
+    // Clear the numeric & note fields so the worker can log the next bed right away
+    document.getElementById('fertEcBefore').value = '';
+    document.getElementById('fertWaterBefore').value = '';
+    document.getElementById('fertEcAfter').value = '';
+    document.getElementById('fertWaterAfter').value = '';
+    document.getElementById('fertPh').value = '';
+    document.getElementById('fertNote').value = '';
+    // (If you have a separate addAmount input ID, clear it here too)
+
     alert('บันทึกการเติมปุ๋ยเรียบร้อย');
-    backToMenu();
   } finally {
     setLoader(false);
   }
 }
+
+
+// -------------------separator--------------------------//
 
 // --- 4. พ่นปุ๋ย/ยา (Instant Load) ---
 async function loadSprayTanks() {
@@ -896,6 +941,8 @@ async function loadSprayTanks() {
   }
 }
 
+// -------------------separator--------------------------//
+
 function renderSprayDropdown(sel, tanks) {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">-- เลือกถังที่รอพ่น --</option>';
@@ -904,6 +951,9 @@ function renderSprayDropdown(sel, tanks) {
   });
   if (currentVal) sel.value = currentVal;
 }
+
+
+// -------------------separator--------------------------//
 
 function onSprayTankSelectChange() {
   const idx = document.getElementById('sprayTankSelect').value;
@@ -919,6 +969,9 @@ function onSprayTankSelectChange() {
   }
 }
 
+
+// -------------------separator--------------------------//
+
 async function submitSpray() {
   const idx = document.getElementById('sprayTankSelect').value;
   if (!idx) {
@@ -927,18 +980,31 @@ async function submitSpray() {
   }
   setLoader(true);
   try {
+
+
     await apiRequest('updateSprayRecord', {
       user: currentUser.name,
       rowIndex: idx,
       sprayLocation: document.getElementById('sprayLocation').value
     });
-    appCache.tanks = null; // Clear cache so sprayed tank disappears
+
+    // 1. Remove the sprayed tank from cache immediately so the dropdown updates without waiting
+    if (appCache.tanks) {
+      appCache.tanks = appCache.tanks.filter(t => String(t.rowIndex) !== String(idx));
+    }
+
+    // 2. Clear inputs & refresh the dropdown on the same page
+    document.getElementById('sprayLocation').value = '';
+    loadSprayTanks();
     alert('บันทึกการพ่นเรียบร้อย');
-    backToMenu();
+    //backToMenu();
   } finally {
     setLoader(false);
   }
 }
+
+
+// -------------------separator--------------------------//
 
 // --- 5. เก็บเกี่ยว (Instant Load) ---
 async function loadHarvestList() {
@@ -958,6 +1024,10 @@ async function loadHarvestList() {
     console.error(err);
   }
 }
+
+
+// -------------------separator--------------------------//
+
 
 async function submitHarvest() {
   const refId = document.getElementById('harvestSelect').value;
@@ -979,15 +1049,25 @@ async function submitHarvest() {
       weight: weight,
       note: document.getElementById('harvestNote').value
     });
-    delete appCache.plantings['เก็บเกี่ยว']; // Clear cache
-    alert('บันทึกการเก็บเกี่ยวเรียบร้อย');
+
+    // 1. Remove the harvested item from cache immediately so the dropdown updates without waiting
+    if (appCache.plantings['เก็บเกี่ยว']) {
+      appCache.plantings['เก็บเกี่ยว'] = appCache.plantings['เก็บเกี่ยว'].filter(
+        it => String(it.refId) !== String(refId)
+      );
+    }
+
+    // 2. Clear inputs & refresh the dropdown on the same page
     document.getElementById('harvestWeight').value = '';
     document.getElementById('harvestNote').value = '';
-    backToMenu();
+    loadHarvestList();
+
+    alert('บันทึกการเก็บเกี่ยวเรียบร้อย');
   } finally {
     setLoader(false);
   }
 }
+
 
 
 </script>
