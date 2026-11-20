@@ -488,33 +488,58 @@ let staffList = [];
 let selectedTrays = [];
 let unsprayedTanks = [];
 
+
+
+// 1. Add a simple memory cache at the top of your script
+const appCache = {
+  plantings: {}, // stores by step name (e.g., 'อนุบาล 1', 'เก็บเกี่ยว')
+  tanks: null
+};
+
+// -------------------separator--------------------------//
+
+
 function setLoader(show) {
 document.getElementById('loader').style.visibility = show ? 'visible' : 'hidden';
 }
 
+
+
+// -------------------separator--------------------------//
+
 // ฟังก์ชันยิง API แบบ text/plain ป้องกันปัญหา CORS Failed to fetch 100%
-async function apiRequest(action, payload = {}) {
-if (!GAS_API_URL || GAS_API_URL.includes("YOUR_APPS_SCRIPT")) {
-alert("กรุณานำ Web App URL จาก Google Apps Script มาใส่ในตัวแปร GAS_API_URL ก่อนครับ");
-throw new Error("Missing GAS_API_URL");
+
+async function apiRequest(action, payload = {}, silent = false) {
+  if (!GAS_API_URL || GAS_API_URL.includes("YOUR_APPS_SCRIPT")) {
+    alert("กรุณานำ Web App URL จาก Google Apps Script มาใส่ในตัวแปร GAS_API_URL ก่อนครับ");
+    throw new Error("Missing GAS_API_URL");
+  }
+  try {
+    const response = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: action, payload: payload })
+    });
+    const res = await response.json();
+    if (res.status === 'success') {
+      return res.data;
+    } else {
+      throw new Error(res.message || 'API error');
+    }
+  } catch (err) {
+    // Only show alert if the user actively clicked a button (silent = false)
+    if (!silent) {
+      alert('เกิดข้อผิดพลาดในการเชื่อมต่อ Google Sheet: ' + err.message);
+    }
+    throw err;
+  }
 }
-try {
-const response = await fetch(GAS_API_URL, {
-method: 'POST',
-headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-body: JSON.stringify({ action: action, payload: payload })
-});
-const res = await response.json();
-if (res.status === 'success') {
-return res.data;
-} else {
-throw new Error(res.message || 'API error');
-}
-} catch (err) {
-alert('เกิดข้อผิดพลาดในการเชื่อมต่อ Google Sheet: ' + err.message);
-throw err;
-}
-}
+
+
+
+
+// -------------------separator--------------------------//
+
 
 // Live Clock Display
 function updateClock() {
@@ -530,17 +555,51 @@ document.querySelectorAll('.live-clock').forEach(el => el.innerText = formatted)
 setInterval(updateClock, 1000);
 updateClock();
 
-window.onload = function() {
-const saved = localStorage.getItem('farm_user');
-if (saved) {
-currentUser = JSON.parse(saved);
-document.getElementById('txtUserName').innerText = `${currentUser.name}`;
-loadInitialData();
-showScreen('pageMenu');
-} else {
-loadStaff();
-}
+
+
+
+
+// -------------------separator--------------------------//
+
+window.onload = async function() {
+  const saved = localStorage.getItem('farm_user');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    document.getElementById('txtUserName').innerText = `${currentUser.name}`;
+    showScreen('pageMenu');
+    await loadInitialData();
+    preloadBackgroundData();
+  } else {
+    loadStaff();
+  }
 };
+
+
+// -------------------separator--------------------------//
+
+
+async function preloadBackgroundData() {
+  try {
+    // 1. Load default plant step first (most commonly used)
+    const defaultPlantStep = document.getElementById('plantStepSelect')?.value;
+    if (defaultPlantStep) {
+      appCache.plantings[defaultPlantStep] = await apiRequest('getPendingPlantings', { step: defaultPlantStep }, true);
+    }
+
+    // 2. Load unsprayed tanks next
+    appCache.tanks = await apiRequest('getUnsprayedTanks', {}, true);
+
+    // 3. Load harvest list last
+    appCache.plantings['เก็บเกี่ยว'] = await apiRequest('getPendingPlantings', { step: 'เก็บเกี่ยว' }, true);
+  } catch (err) {
+    console.warn('Background preload skipped:', err);
+  }
+}
+
+
+
+// -------------------separator--------------------------//
+
 
 function showScreen(id) {
 const screens = ['pageSignIn', 'pageMenu', 'pageSowing', 'pagePlant', 'pageFert', 'pageSpray', 'pageHarvest'];
@@ -554,9 +613,16 @@ el.style.display = 'none';
 });
 }
 
+
+
+// -------------------separator--------------------------//
+
+
 function backToMenu() {
 showScreen('pageMenu');
 }
+
+// -------------------separator--------------------------//
 
 function handleLogout() {
 if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
@@ -566,18 +632,22 @@ loadStaff();
 }
 }
 
+// -------------------separator--------------------------//
+
 async function loadStaff() {
-setLoader(true);
-try {
-staffList = await apiRequest('getStaffList');
-const sel = document.getElementById('selStaff');
-sel.innerHTML = '<option value="">-- กรุณาเลือก --</option>';
-staffList.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`);
-showScreen('pageSignIn');
-} finally {
-setLoader(false);
+  setLoader(true);
+  try {
+    staffList = await apiRequest('getStaffList');
+    const sel = document.getElementById('selStaff');
+    sel.innerHTML = '<option value="">-- กรุณาเลือก --</option>';
+    staffList.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.name} (${s.id})</option>`);
+    showScreen('pageSignIn');
+  } finally {
+    setLoader(false);
+  }
 }
-}
+
+// -------------------separator--------------------------//
 
 function onSelectStaffChange() {
 const id = document.getElementById('selStaff').value;
@@ -588,19 +658,26 @@ document.getElementById('txtStaffName').value = found.name;
 }
 }
 
-function signIn() {
-const id = document.getElementById('txtStaffId').value.trim();
-const name = document.getElementById('txtStaffName').value.trim();
-if (!id || !name) {
-alert('กรุณากรอกรหัสและชื่อ');
-return;
+
+// -------------------separator--------------------------//
+
+async function signIn() {
+  const id = document.getElementById('txtStaffId').value.trim();
+  const name = document.getElementById('txtStaffName').value.trim();
+  if (!id || !name) {
+    alert('กรุณากรอกรหัสและชื่อ');
+    return;
+  }
+  currentUser = { id: id, name: name };
+  localStorage.setItem('farm_user', JSON.stringify(currentUser));
+  document.getElementById('txtUserName').innerText = `${name}`;
+  showScreen('pageMenu');
+  await loadInitialData();
+  preloadBackgroundData();
 }
-currentUser = { id: id, name: name };
-localStorage.setItem('farm_user', JSON.stringify(currentUser));
-document.getElementById('txtUserName').innerText = `${name} (${id})`;
-loadInitialData();
-showScreen('pageMenu');
-}
+
+// -------------------separator--------------------------//
+
 
 async function loadInitialData() {
 setLoader(true);
@@ -626,6 +703,10 @@ allBeds.forEach(b => fertBedSel.innerHTML += `<option value="${b}">${b}</option>
 setLoader(false);
 }
 }
+
+
+// -------------------separator--------------------------//
+
 
 function initSowingTrays() {
 const grid = document.getElementById('sowTrayGrid');
@@ -679,193 +760,236 @@ setLoader(false);
 }
 }
 
-// --- 2. ปลูก / แยกแปลง ---
+// --- 2. ปลูก / แยกแปลง (Instant Load) ---
 async function onPlantStepChanged() {
-const step = document.getElementById('plantStepSelect').value;
-setLoader(true);
-try {
-const items = await apiRequest('getPendingPlantings', { step: step });
-const sel = document.getElementById('plantSourceSelect');
-sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
-items.forEach(it => {
-sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg} ${it.age} วัน (no.${it.refId})</option>`;
-});
-document.getElementById('plantBedsContainer').innerHTML = '';
-addPlantBedRow();
-} finally {
-setLoader(false);
+  const step = document.getElementById('plantStepSelect').value;
+  const sel = document.getElementById('plantSourceSelect');
+
+  document.getElementById('plantBedsContainer').innerHTML = '';
+  addPlantBedRow();
+
+  // If we have cached data, render immediately without full-screen loader!
+  if (appCache.plantings[step]) {
+    renderPlantDropdown(sel, appCache.plantings[step]);
+  } else {
+    sel.innerHTML = '<option value="">⏳ กำลังโหลดรายการ...</option>';
+  }
+
+  // Fetch fresh data quietly in the background
+  try {
+    const items = await apiRequest('getPendingPlantings', { step: step }, true);
+    appCache.plantings[step] = items; // Update cache
+    if (document.getElementById('plantStepSelect').value === step) {
+      renderPlantDropdown(sel, items);
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
+
+function renderPlantDropdown(sel, items) {
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
+  items.forEach(it => {
+    sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg} ${it.age} วัน (no.${it.refId})</option>`;
+  });
+  if (currentVal) sel.value = currentVal;
 }
 
 function addPlantBedRow() {
-const step = document.getElementById('plantStepSelect').value;
-let bedOptions = masterData.plantBeds;
-if (step === 'อนุบาล 1') bedOptions = masterData.nur1Beds;
-else if (step === 'อนุบาล 2') bedOptions = masterData.nur2Beds;
+  const step = document.getElementById('plantStepSelect').value;
+  let bedOptions = masterData.plantBeds;
+  if (step === 'อนุบาล 1') bedOptions = masterData.nur1Beds;
+  else if (step === 'อนุบาล 2') bedOptions = masterData.nur2Beds;
 
-const container = document.getElementById('plantBedsContainer');
-const div = document.createElement('div');
-div.className = 'bed-item-row';
-const optHtml = bedOptions.map(b => `<option value="${b}">${b}</option>`).join('');
-div.innerHTML = `
-<select class="p-bed">${optHtml}</select>
-<input type="number" class="p-count" placeholder="จำนวน" value="30">
-<button type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;" onclick="this.parentElement.remove()">✕</button>
-`;
-container.appendChild(div);
+  const container = document.getElementById('plantBedsContainer');
+  const div = document.createElement('div');
+  div.className = 'bed-item-row';
+  const optHtml = bedOptions.map(b => `<option value="${b}">${b}</option>`).join('');
+  div.innerHTML = `
+    <select class="p-bed">${optHtml}</select>
+    <input type="number" class="p-count" placeholder="จำนวน" value="30">
+    <button type="button" style="background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(div);
 }
 
 async function submitPlant() {
-const refId = document.getElementById('plantSourceSelect').value;
-if (!refId) {
-alert('กรุณาเลือกรายการ');
-return;
-}
-const rows = document.querySelectorAll('.bed-item-row');
-const beds = [];
-rows.forEach(r => {
-beds.push({
-bedName: r.querySelector('.p-bed').value,
-count: r.querySelector('.p-count').value
-});
-});
-if (beds.length === 0) {
-alert('กรุณาเพิ่มแปลง');
-return;
-}
+  const refId = document.getElementById('plantSourceSelect').value;
+  if (!refId) {
+    alert('กรุณาเลือกรายการ');
+    return;
+  }
+  const rows = document.querySelectorAll('.bed-item-row');
+  const beds = [];
+  rows.forEach(r => {
+    beds.push({
+      bedName: r.querySelector('.p-bed').value,
+      count: r.querySelector('.p-count').value
+    });
+  });
+  if (beds.length === 0) {
+    alert('กรุณาเพิ่มแปลง');
+    return;
+  }
 
-setLoader(true);
-try {
-const res = await apiRequest('savePlantStep', {
-user: currentUser.name,
-step: document.getElementById('plantStepSelect').value,
-refId: refId,
-beds: beds,
-note: document.getElementById('plantNote').value
-});
-alert(`บันทึกเรียบร้อย (${res.count} แถว)`);
-backToMenu();
-} finally {
-setLoader(false);
-}
+  setLoader(true);
+  try {
+    const step = document.getElementById('plantStepSelect').value;
+    const res = await apiRequest('savePlantStep', {
+      user: currentUser.name,
+      step: step,
+      refId: refId,
+      beds: beds,
+      note: document.getElementById('plantNote').value
+    });
+    delete appCache.plantings[step]; // Clear cache so completed item disappears
+    alert(`บันทึกเรียบร้อย (${res.count} แถว)`);
+    backToMenu();
+  } finally {
+    setLoader(false);
+  }
 }
 
 // --- 3. เติมปุ๋ย ---
 async function submitFertilizer() {
-setLoader(true);
-try {
-await apiRequest('saveFertilizer', {
-user: currentUser.name,
-bedName: document.getElementById('fertBedSelect').value,
-fertilizer: document.getElementById('fertTypeSelect').value,
-ecBefore: document.getElementById('fertEcBefore').value,
-addAmount :document.getElementById('fertEcBefore').value,
-waterBefore: document.getElementById('fertWaterBefore').value,
-ecAfter: document.getElementById('fertEcAfter').value,
-waterAfter: document.getElementById('fertWaterAfter').value,
-ph: document.getElementById('fertPh').value,
-note: document.getElementById('fertNote').value
-});
-alert('บันทึกการเติมปุ๋ยเรียบร้อย');
-backToMenu();
-} finally {
-setLoader(false);
-}
+  setLoader(true);
+  try {
+    await apiRequest('saveFertilizer', {
+      user: currentUser.name,
+      bedName: document.getElementById('fertBedSelect').value,
+      fertilizer: document.getElementById('fertTypeSelect').value,
+      ecBefore: document.getElementById('fertEcBefore').value,
+      addAmount: document.getElementById('fertEcBefore').value,
+      waterBefore: document.getElementById('fertWaterBefore').value,
+      ecAfter: document.getElementById('fertEcAfter').value,
+      waterAfter: document.getElementById('fertWaterAfter').value,
+      ph: document.getElementById('fertPh').value,
+      note: document.getElementById('fertNote').value
+    });
+    alert('บันทึกการเติมปุ๋ยเรียบร้อย');
+    backToMenu();
+  } finally {
+    setLoader(false);
+  }
 }
 
-// --- 4. พ่นปุ๋ย/ยา ---
+// --- 4. พ่นปุ๋ย/ยา (Instant Load) ---
 async function loadSprayTanks() {
-setLoader(true);
-try {
-unsprayedTanks = await apiRequest('getUnsprayedTanks');
-const sel = document.getElementById('sprayTankSelect');
-sel.innerHTML = '<option value="">-- เลือกถังที่รอพ่น --</option>';
-unsprayedTanks.forEach(t => {
-sel.innerHTML += `<option value="${t.rowIndex}">ถัง ${t.tankNo}: ${t.formula}</option>`;
-});
-document.getElementById('sprayTankInfo').style.display = 'none';
-} finally {
-setLoader(false);
+  const sel = document.getElementById('sprayTankSelect');
+  document.getElementById('sprayTankInfo').style.display = 'none';
+
+  if (appCache.tanks) {
+    unsprayedTanks = appCache.tanks;
+    renderSprayDropdown(sel, appCache.tanks);
+  } else {
+    sel.innerHTML = '<option value="">⏳ กำลังโหลดข้อมูลถัง...</option>';
+  }
+
+  try {
+    const freshTanks = await apiRequest('getUnsprayedTanks', {}, true);
+    appCache.tanks = freshTanks;
+    unsprayedTanks = freshTanks;
+    renderSprayDropdown(sel, freshTanks);
+  } catch (err) {
+    console.error(err);
+  }
 }
+
+function renderSprayDropdown(sel, tanks) {
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">-- เลือกถังที่รอพ่น --</option>';
+  tanks.forEach(t => {
+    sel.innerHTML += `<option value="${t.rowIndex}">ถัง ${t.tankNo}: ${t.formula}</option>`;
+  });
+  if (currentVal) sel.value = currentVal;
 }
 
 function onSprayTankSelectChange() {
-const idx = document.getElementById('sprayTankSelect').value;
-const found = unsprayedTanks.find(t => String(t.rowIndex) === String(idx));
-const box = document.getElementById('sprayTankInfo');
-if (found) {
-document.getElementById('lblTankFormula').innerText = found.formula;
-document.getElementById('lblTankGH').innerText = found.targetGreenhouse;
-document.getElementById('lblTankBed').innerText = found.targetBed;
-box.style.display = 'block';
-} else {
-box.style.display = 'none';
-}
+  const idx = document.getElementById('sprayTankSelect').value;
+  const found = unsprayedTanks.find(t => String(t.rowIndex) === String(idx));
+  const box = document.getElementById('sprayTankInfo');
+  if (found) {
+    document.getElementById('lblTankFormula').innerText = found.formula;
+    document.getElementById('lblTankGH').innerText = found.targetGreenhouse;
+    document.getElementById('lblTankBed').innerText = found.targetBed;
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
 }
 
 async function submitSpray() {
-const idx = document.getElementById('sprayTankSelect').value;
-if (!idx) {
-alert('กรุณาเลือกถัง');
-return;
-}
-setLoader(true);
-try {
-await apiRequest('updateSprayRecord', {
-user: currentUser.name,
-rowIndex: idx,
-sprayLocation: document.getElementById('sprayLocation').value
-});
-alert('บันทึกการพ่นเรียบร้อย');
-backToMenu();
-} finally {
-setLoader(false);
-}
+  const idx = document.getElementById('sprayTankSelect').value;
+  if (!idx) {
+    alert('กรุณาเลือกถัง');
+    return;
+  }
+  setLoader(true);
+  try {
+    await apiRequest('updateSprayRecord', {
+      user: currentUser.name,
+      rowIndex: idx,
+      sprayLocation: document.getElementById('sprayLocation').value
+    });
+    appCache.tanks = null; // Clear cache so sprayed tank disappears
+    alert('บันทึกการพ่นเรียบร้อย');
+    backToMenu();
+  } finally {
+    setLoader(false);
+  }
 }
 
-// --- 5. เก็บเกี่ยว ---
+// --- 5. เก็บเกี่ยว (Instant Load) ---
 async function loadHarvestList() {
-setLoader(true);
-try {
-const items = await apiRequest('getPendingPlantings', { step: 'เก็บเกี่ยว' });
-const sel = document.getElementById('harvestSelect');
-sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
-items.forEach(it => {
-sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg}  ${it.age} วัน (no.${it.refId})</option>`;
-});
-} finally {
-setLoader(false);
-}
+  const sel = document.getElementById('harvestSelect');
+
+  if (appCache.plantings['เก็บเกี่ยว']) {
+    renderPlantDropdown(sel, appCache.plantings['เก็บเกี่ยว']);
+  } else {
+    sel.innerHTML = '<option value="">⏳ กำลังโหลดรายการ...</option>';
+  }
+
+  try {
+    const items = await apiRequest('getPendingPlantings', { step: 'เก็บเกี่ยว' }, true);
+    appCache.plantings['เก็บเกี่ยว'] = items;
+    renderPlantDropdown(sel, items);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function submitHarvest() {
-const refId = document.getElementById('harvestSelect').value;
-const weight = document.getElementById('harvestWeight').value;
-if (!refId) {
-alert('กรุณาเลือกรายการรอเก็บเกี่ยว');
-return;
-}
-if (!weight) {
-alert('กรุณาระบุน้ำหนัก (กก.)');
-return;
+  const refId = document.getElementById('harvestSelect').value;
+  const weight = document.getElementById('harvestWeight').value;
+  if (!refId) {
+    alert('กรุณาเลือกรายการรอเก็บเกี่ยว');
+    return;
+  }
+  if (!weight) {
+    alert('กรุณาระบุน้ำหนัก (กก.)');
+    return;
+  }
+
+  setLoader(true);
+  try {
+    await apiRequest('saveHarvest', {
+      user: currentUser.name,
+      refId: refId,
+      weight: weight,
+      note: document.getElementById('harvestNote').value
+    });
+    delete appCache.plantings['เก็บเกี่ยว']; // Clear cache
+    alert('บันทึกการเก็บเกี่ยวเรียบร้อย');
+    document.getElementById('harvestWeight').value = '';
+    document.getElementById('harvestNote').value = '';
+    backToMenu();
+  } finally {
+    setLoader(false);
+  }
 }
 
-setLoader(true);
-try {
-await apiRequest('saveHarvest', {
-user: currentUser.name,
-refId: refId,
-weight: weight,
-note: document.getElementById('harvestNote').value
-});
-alert('บันทึกการเก็บเกี่ยวเรียบร้อย');
-document.getElementById('harvestWeight').value = '';
-document.getElementById('harvestNote').value = '';
-backToMenu();
-} finally {
-setLoader(false);
-}
-}
+
 </script>
 </body>
 </html>
