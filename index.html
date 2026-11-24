@@ -150,6 +150,71 @@ color: #087f43;
 font-weight: 600;
 }
 
+
+
+
+/* Grid for house */
+.house-selector-grid {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 6px;
+background: white;
+padding: 8px;
+border-radius: 8px;
+border: 1px solid #dcdcdc;
+}
+.house-btn {
+padding: 6px 1px;
+text-align: center;
+font-size: 0.82rem;
+border-radius: 4px;
+background: #f8f9fa;
+border: 1px solid #e0e0e0;
+cursor: pointer;
+user-select: none;
+}
+.house-btn.active {
+background: #c8e6c9;
+border-color: #087f43;
+color: #087f43;
+font-weight: 600;
+}
+
+
+
+
+
+
+
+/* Grid for Bed */
+.bed-selector-grid {
+display: grid;
+grid-template-columns: repeat(5, 1fr);
+gap: 6px;
+background: white;
+padding: 8px;
+border-radius: 8px;
+border: 1px solid #dcdcdc;
+}
+.bed-btn {
+padding: 6px 1px;
+text-align: center;
+font-size: 0.82rem;
+border-radius: 4px;
+background: #f8f9fa;
+border: 1px solid #e0e0e0;
+cursor: pointer;
+user-select: none;
+}
+.bed-btn.active {
+background: #c8e6c9;
+border-color: #087f43;
+color: #087f43;
+font-weight: 600;
+}
+
+
+
 /* Two-Column Grid for Fertilizer */
 .grid-2col {
 display: grid;
@@ -222,6 +287,65 @@ border-radius: 50%;
 animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+
+<style>
+  .harvest-table-wrap {
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+  }
+  .harvest-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: center;
+  }
+  .harvest-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f3f4f6;
+    color: #374151;
+    font-weight: 600;
+    padding: 8px 4px;
+    border-bottom: 1px solid #d1d5db;
+    z-index: 1;
+    line-height: 1.2;
+  }
+  .harvest-table tbody td {
+    padding: 7px 4px;
+    border-bottom: 1px dashed #e5e7eb;
+    color: #111827;
+  }
+  /* Dim unselected rows just like the 2nd image */
+  .harvest-table tbody tr.row-unselected td {
+    color: #9ca3af;
+  }
+  .harvest-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #111827;
+    cursor: pointer;
+  }
+  .harvest-weight-input {
+    width: 58px;
+    padding: 4px;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .harvest-weight-input:disabled {
+    background: transparent;
+    border-color: transparent;
+  }
+
+
+
+
+
 </style>
 </head>
 <body>
@@ -432,15 +556,26 @@ animation: spin 0.8s linear infinite;
 <div class="field-group">
 <label class="field-label">เลขถัง (ถังที่รอพ่น)</label>
 <select id="sprayTankSelect" onchange="onSprayTankSelectChange()"></select>
-</div>
+
 <div id="sprayTankInfo" style="font-size: 0.8rem; background: white; padding: 8px; border-radius: 6px; border: 1px solid #ddd; display: none;">
-<div>สูตร: <b id="lblTankFormula">-</b></div>
+<div>สูตร: <b id="lblTankFormula" >-</b></div>
 <div>เป้าหมาย: โรง <b id="lblTankGH">-</b> | แปลง <b id="lblTankBed">-</b></div>
 </div>
-<div class="field-group">
-<label class="field-label">พ่นที่ (โรง/แปลงจริงที่พ่น)</label>
-<input type="text" id="sprayLocation" placeholder="เช่น โรง 1 แปลง 1A, 1B">
 </div>
+
+<div class="field-group">
+<label class="field-label">โรงที่พ่น (เลือกได้หลายโรง)</label>
+<div class="house-selector-grid" id="sowTrayGrid"></div>
+</div>
+
+
+<div class="field-group">
+<label class="field-label">แปลงที่พ่น (เลือกได้หลายแปลง)</label>
+<div class="bed-selector-grid" id="sowTrayGrid"></div>
+</div>
+
+
+
 <div class="field-group">
 <label class="field-label">หมายเหตุ</label>
 <textarea id="sprayNote" rows="2"></textarea>
@@ -449,29 +584,51 @@ animation: spin 0.8s linear infinite;
 </div>
 </div>
 
-<!-- 6. FORM: เก็บเกี่ยว (Harvest - จากแถว 98-112 ใน App_Draft) -->
+
+
+
+
+<!-- 6. FORM: เก็บเกี่ยว -->
 <div id="pageHarvest" style="display: none; flex: 1; flex-direction: column;">
-<div class="sub-header theme-harvest">
-<div class="title-group">🧺 เก็บเกี่ยว</div>
-<div class="clock live-clock">--:--:--</div>
-<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+  <div class="sub-header theme-harvest">
+    <div class="title-group">🧺 เก็บเกี่ยว</div>
+    <div class="clock live-clock">--:--:--</div>
+    <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+  </div>
+
+  <div class="form-body">
+    <div class="field-group">
+      <label class="field-label">รายการรอเก็บเกี่ยว</label>
+      <div class="harvest-table-wrap">
+        <table class="harvest-table">
+          <thead>
+            <tr>
+              <th>เลือก</th>
+              <th>รหัส</th>
+              <th>ชื่อ<br>แปลง</th>
+              <th>ชนิดผัก</th>
+              <th>อายุผัก</th>
+              <th>น้ำหนัก<br>(กก)</th>
+              <th>หมด<br>แล้ว</th>
+            </tr>
+          </thead>
+          <tbody id="harvestTableBody">
+            <tr><td colspan="7" style="padding:6px; color:#6b7280;">⏳ กำลังโหลดรายการ...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">หมายเหตุ</label>
+      <textarea id="harvestNote" rows="3" placeholder="ระบุเพิ่มเติม"></textarea>
+    </div>
+
+    <button class="btn-submit-action" onclick="submitHarvest()">บันทึก</button>
+  </div>
 </div>
-<div class="form-body">
-<div class="field-group">
-<label class="field-label">เก็บจาก (รายการรอเก็บเกี่ยวจากสถานะ)</label>
-<select id="harvestSelect"></select>
-</div>
-<div class="field-group">
-<label class="field-label">น้ำหนัก (กก.)</label>
-<input type="number" step="0.01" id="harvestWeight" placeholder="0.00">
-</div>
-<div class="field-group">
-<label class="field-label">หมายเหตุ</label>
-<textarea id="harvestNote" rows="3" placeholder="ระบุเพิ่มเติม"></textarea>
-</div>
-<button class="btn-submit-action" onclick="submitHarvest()">บันทึก</button>
-</div>
-</div>
+
+
 
 </div>
 
@@ -806,7 +963,18 @@ function renderPlantDropdown(sel, items) {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
   items.forEach(it => {
-    sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg} ${it.age} วัน (no.${it.refId})</option>`;
+    sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg}  (รายการที่ ${it.refId} อายุ ${it.age} วัน)</option>`;
+  });
+  if (currentVal) sel.value = currentVal;
+}
+
+// -------------------separator--------------------------//
+
+function renderHarvestDropdown(sel, items) {
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
+  items.forEach(it => {
+    sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg}  (รายการที่ ${it.refId} อายุ ${it.age} วัน)</option>`;
   });
   if (currentVal) sel.value = currentVal;
 }
@@ -1006,59 +1174,127 @@ async function submitSpray() {
 
 // -------------------separator--------------------------//
 
-// --- 5. เก็บเกี่ยว (Instant Load) ---
+// --- 5. เก็บเกี่ยว (Table Multi-Select) ---
 async function loadHarvestList() {
-  const sel = document.getElementById('harvestSelect');
+  const tbody = document.getElementById('harvestTableBody');
 
   if (appCache.plantings['เก็บเกี่ยว']) {
-    renderPlantDropdown(sel, appCache.plantings['เก็บเกี่ยว']);
+    renderHarvestTable(appCache.plantings['เก็บเกี่ยว']);
   } else {
-    sel.innerHTML = '<option value="">⏳ กำลังโหลดรายการ...</option>';
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:16px; color:#6b7280;">⏳ กำลังโหลดรายการ...</td></tr>';
   }
 
   try {
     const items = await apiRequest('getPendingPlantings', { step: 'เก็บเกี่ยว' }, true);
     appCache.plantings['เก็บเกี่ยว'] = items;
-    renderPlantDropdown(sel, items);
+    renderHarvestTable(items);
   } catch (err) {
     console.error(err);
   }
 }
 
+function renderHarvestTable(items) {
+  const tbody = document.getElementById('harvestTableBody');
+  if (!items || items.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:16px; color:#6b7280;">ไม่มีรายการรอเก็บเกี่ยว</td></tr>';
+    return;
+  }
 
-// -------------------separator--------------------------//
+  tbody.innerHTML = items.map((item, idx) => `
+    <tr class="row-unselected"
+        data-ref-id="${item.refId}"
+        data-bed="${item.trayOrBed || ''}"
+        data-veg="${item.veg || ''}">
+      <td>
+        <input type="checkbox" class="chk-select" onchange="toggleHarvestRow(this)">
+      </td>
+      <td>${item.refId}</td>
+      <td>${item.trayOrBed || '-'}</td>
+      <td>${item.veg || '-'}</td>
+      <td>${item.age !== undefined && item.age !== '' ? item.age : '-'}</td>
+      <td>
+        <input type="number" step="0.01" min="0" class="harvest-weight-input" disabled>
+      </td>
+      <td>
+        <input type="checkbox" class="chk-finished" disabled>
+      </td>
+    </tr>
+  `).join('');
+}
 
+function toggleHarvestRow(checkbox) {
+  const tr = checkbox.closest('tr');
+  const weightInput = tr.querySelector('.harvest-weight-input');
+  const finishedChk = tr.querySelector('.chk-finished');
+
+  if (checkbox.checked) {
+    tr.classList.remove('row-unselected');
+    weightInput.disabled = false;
+    finishedChk.disabled = false;
+    weightInput.focus();
+  } else {
+    tr.classList.add('row-unselected');
+    weightInput.value = '';
+    weightInput.disabled = true;
+    finishedChk.checked = false;
+    finishedChk.disabled = true;
+  }
+}
 
 async function submitHarvest() {
-  const refId = document.getElementById('harvestSelect').value;
-  const weight = document.getElementById('harvestWeight').value;
-  if (!refId) {
-    alert('กรุณาเลือกรายการรอเก็บเกี่ยว');
+  const rows = document.querySelectorAll('#harvestTableBody tr[data-ref-id]');
+  const selectedItems = [];
+
+  for (const tr of rows) {
+    const isSelected = tr.querySelector('.chk-select').checked;
+    if (!isSelected) continue;
+
+    const refId = tr.dataset.refId;
+    const trayOrBed = tr.dataset.bed;
+    const veg = tr.dataset.veg;
+    const weight = parseFloat(tr.querySelector('.harvest-weight-input').value);
+    const isFinished = tr.querySelector('.chk-finished').checked;
+
+    if (!weight || weight <= 0) {
+      alert(`กรุณาระบุน้ำหนัก (กก.) สำหรับรหัส ${refId}`);
+      tr.querySelector('.harvest-weight-input').focus();
+      return;
+    }
+
+    selectedItems.push({
+      refId: refId,
+      trayOrBed: trayOrBed,
+      veg: veg,
+      weight: weight,
+      isFinished: isFinished
+    });
+  }
+
+  if (selectedItems.length === 0) {
+    alert('กรุณาเลือกรายการที่ต้องการเก็บเกี่ยวอย่างน้อย 1 รายการ');
     return;
   }
-  if (!weight) {
-    alert('กรุณาระบุน้ำหนัก (กก.)');
-    return;
-  }
+
+  const note = document.getElementById('harvestNote').value;
 
   setLoader(true);
   try {
     await apiRequest('saveHarvest', {
       user: currentUser.name,
-      refId: refId,
-      weight: weight,
-      note: document.getElementById('harvestNote').value
+      note: note,
+      items: selectedItems
     });
 
-    // 1. Remove the harvested item from cache immediately so the dropdown updates without waiting
-    if (appCache.plantings['เก็บเกี่ยว']) {
+    // Remove ONLY items marked "หมดแล้ว" from local cache immediately
+    const finishedIds = new Set(
+      selectedItems.filter(it => it.isFinished).map(it => String(it.refId))
+    );
+    if (appCache.plantings['เก็บเกี่ยว'] && finishedIds.size > 0) {
       appCache.plantings['เก็บเกี่ยว'] = appCache.plantings['เก็บเกี่ยว'].filter(
-        it => String(it.refId) !== String(refId)
+        it => !finishedIds.has(String(it.refId))
       );
     }
 
-    // 2. Clear inputs & refresh the dropdown on the same page
-    document.getElementById('harvestWeight').value = '';
     document.getElementById('harvestNote').value = '';
     loadHarvestList();
 
@@ -1067,8 +1303,6 @@ async function submitHarvest() {
     setLoader(false);
   }
 }
-
-
 
 </script>
 </body>
