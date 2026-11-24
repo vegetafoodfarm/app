@@ -987,7 +987,7 @@ function renderHarvestDropdown(sel, items) {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">-- เลือกรายการ --</option>';
   items.forEach(it => {
-    sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg}  (รายการที่ ${it.refId} อายุ ${it.age} วัน)</option>`;
+    sel.innerHTML += `<option value="${it.refId}"> ${it.trayOrBed} | ${it.veg}  (no. ${it.refId} age ${it.age} days)</option>`;
   });
   if (currentVal) sel.value = currentVal;
 }
