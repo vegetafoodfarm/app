@@ -560,44 +560,43 @@ animation: spin 0.8s linear infinite;
 
 <!-- 5. FORM: พ่นปุ๋ยและยา (Spray) -->
 <div id="pageSpray" style="display: none; flex: 1; flex-direction: column;">
-<div class="sub-header theme-spray">
-<div class="title-group">🚿 พ่นปุ๋ย/ยา</div>
-<div class="clock live-clock">--:--:--</div>
-<button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+  <div class="sub-header theme-spray">
+    <div class="title-group">🚿 พ่นปุ๋ย/ยา</div>
+    <div class="clock live-clock">--:--:--</div>
+    <button class="btn-close-banner" onclick="backToMenu()">✕ ปิด</button>
+  </div>
+  <div class="form-body">
+    <div class="field-group">
+      <label class="field-label">เลขถัง (ถังที่รอพ่น)</label>
+      <select id="sprayTankSelect" onchange="onSprayTankSelectChange()"></select>
+
+      <div id="sprayTankInfo" style="font-size: 0.8rem; background: white; padding: 8px; border-radius: 6px; border: 1px solid #ddd; display: none; margin-top: 6px;">
+        <div>สูตร: <b id="lblTankFormula">-</b></div>
+        <div>เป้าหมาย: โรง <b id="lblTankGH">-</b> | แปลง <b id="lblTankBed">-</b></div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">โรงที่พ่น (เลือกได้หลายโรง)</label>
+      <div class="house-selector-grid" id="sprayHouseGrid"></div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">แปลงที่พ่น (เลือกได้หลายแปลง)</label>
+      <div class="bed-selector-grid" id="sprayBedGrid">
+        <div style="grid-column: span 5; text-align: center; color: #999; font-size: 0.8rem; padding: 4px;">
+          กรุณาเลือกโรง (1-5) ด้านบนก่อน
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">หมายเหตุ</label>
+      <textarea id="sprayNote" rows="2"></textarea>
+    </div>
+    <button class="btn-submit-action" onclick="submitSpray()">บันทึก</button>
+  </div>
 </div>
-<div class="form-body">
-<div class="field-group">
-<label class="field-label">เลขถัง (ถังที่รอพ่น)</label>
-<select id="sprayTankSelect" onchange="onSprayTankSelectChange()"></select>
-
-<div id="sprayTankInfo" style="font-size: 0.8rem; background: white; padding: 8px; border-radius: 6px; border: 1px solid #ddd; display: none;">
-<div>สูตร: <b id="lblTankFormula" >-</b></div>
-<div>เป้าหมาย: โรง <b id="lblTankGH">-</b> | แปลง <b id="lblTankBed">-</b></div>
-</div>
-</div>
-
-<div class="field-group">
-<label class="field-label">โรงที่พ่น (เลือกได้หลายโรง)</label>
-<div class="house-selector-grid" id="sowTrayGrid"></div>
-</div>
-
-
-<div class="field-group">
-<label class="field-label">แปลงที่พ่น (เลือกได้หลายแปลง)</label>
-<div class="bed-selector-grid" id="sowTrayGrid"></div>
-</div>
-
-
-
-<div class="field-group">
-<label class="field-label">หมายเหตุ</label>
-<textarea id="sprayNote" rows="2"></textarea>
-</div>
-<button class="btn-submit-action" onclick="submitSpray()">บันทึก</button>
-</div>
-</div>
-
-
 
 
 
@@ -1100,10 +1099,99 @@ async function submitFertilizer() {
 
 // -------------------separator--------------------------//
 
-// --- 4. พ่นปุ๋ย/ยา (Instant Load) ---
+// --- 4. พ่นปุ๋ย/ยา (Instant Load + Multi-select House & Bed) ---
+let allBedsList = []; // เก็บรายการแปลงทั้งหมดจากชีท "แปลง"
+
+const SPRAY_HOUSE_OPTIONS = [
+  '1 all', '2 all', '3 all', '4 all', '5 all',
+  '1', '2', '3', '4', '5'
+];
+
+// สร้างปุ่มเลือกโรง 10 ปุ่ม (จัดเรียง 5 คอลัมน์ตาม CSS)
+function initSprayHouseGrid() {
+  const grid = document.getElementById('sprayHouseGrid');
+  if (!grid) return;
+
+  grid.innerHTML = SPRAY_HOUSE_OPTIONS.map(label => `
+    <div class="house-btn" data-val="${label}" onclick="toggleSprayHouse(this)">
+      ${label}
+    </div>
+  `).join('');
+}
+
+// เมื่อกดเลือก/ยกเลิกโรงที่พ่น
+function toggleSprayHouse(btn) {
+  const val = btn.dataset.val; // เช่น '1 all' หรือ '1'
+  const houseNum = val.charAt(0); // '1' - '5'
+  const isAllBtn = val.includes('all');
+
+  btn.classList.toggle('active');
+
+  // ป้องกันการเลือกซ้ำซ้อนในโรงเดียวกัน (เช่น ถ้าเลือก '1 all' ให้เอา '1' ออก และกลับกัน)
+  if (btn.classList.contains('active')) {
+    const oppositeVal = isAllBtn ? houseNum : `${houseNum} all`;
+    const oppositeBtn = document.querySelector(`#sprayHouseGrid .house-btn[data-val="${oppositeVal}"]`);
+    if (oppositeBtn) oppositeBtn.classList.remove('active');
+  }
+
+  renderSprayBedGrid();
+}
+
+// อัปเดตกริด "แปลงที่พ่น" เฉพาะโรงที่ถูกเลือกแบบไม่มีคำว่า all ('1', '2', '3', '4', '5')
+function renderSprayBedGrid() {
+  const bedGrid = document.getElementById('sprayBedGrid');
+  if (!bedGrid) return;
+
+  // เก็บค่าแปลงที่เคยติ๊กเลือกไว้ก่อนหน้า เพื่อไม่ให้หายตอนกดเพิ่มโรงอื่น
+  const previouslySelectedBeds = new Set(
+    Array.from(bedGrid.querySelectorAll('.bed-btn.active')).map(el => el.dataset.val)
+  );
+
+  // หาเลขโรงที่ถูกเลือกแบบไม่มี "all"
+  const activeSingleHouses = Array.from(
+    document.querySelectorAll('#sprayHouseGrid .house-btn.active')
+  )
+    .map(el => el.dataset.val)
+    .filter(val => ['1', '2', '3', '4', '5'].includes(val));
+
+  if (activeSingleHouses.length === 0) {
+    bedGrid.innerHTML = `
+      <div style="grid-column: span 5; text-align: center; color: #999; font-size: 0.8rem; padding: 4px;">
+        กรุณาเลือกโรง (1-5) ด้านบนก่อน
+      </div>`;
+    return;
+  }
+
+  // กรองแปลงที่อยู่ในโรงที่เลือก
+  const filteredBeds = allBedsList.filter(item =>
+    activeSingleHouses.includes(String(item.house))
+  );
+
+  if (filteredBeds.length === 0) {
+    bedGrid.innerHTML = `
+      <div style="grid-column: span 5; text-align: center; color: #999; font-size: 0.8rem; padding: 4px;">
+        ไม่พบข้อมูลแปลงในโรงที่เลือก
+      </div>`;
+    return;
+  }
+
+  bedGrid.innerHTML = filteredBeds.map(item => {
+    const isActive = previouslySelectedBeds.has(item.bed) ? 'active' : '';
+    return `
+      <div class="bed-btn ${isActive}" data-val="${item.bed}" onclick="this.classList.toggle('active')">
+        ${item.bed}
+      </div>
+    `;
+  }).join('');
+}
+
 async function loadSprayTanks() {
   const sel = document.getElementById('sprayTankSelect');
   document.getElementById('sprayTankInfo').style.display = 'none';
+
+  // สร้างกริดโรงและรีเซ็ตกริดแปลงทุกครั้งที่เปิดหน้านี้
+  initSprayHouseGrid();
+  renderSprayBedGrid();
 
   if (appCache.tanks) {
     unsprayedTanks = appCache.tanks;
@@ -1112,29 +1200,38 @@ async function loadSprayTanks() {
     sel.innerHTML = '<option value="">⏳ กำลังโหลดข้อมูลถัง...</option>';
   }
 
+  // โหลดรายการแปลงจากชีท "แปลง" มาเก็บไว้ในแคช
+  if (appCache.beds) {
+    allBedsList = appCache.beds;
+    renderSprayBedGrid();
+  }
+
   try {
-    const freshTanks = await apiRequest('getUnsprayedTanks', {}, true);
+    const [freshTanks, freshBeds] = await Promise.all([
+      apiRequest('getUnsprayedTanks', {}, true),
+      appCache.beds ? Promise.resolve(appCache.beds) : apiRequest('getBedsData', {}, true)
+    ]);
+
     appCache.tanks = freshTanks;
     unsprayedTanks = freshTanks;
     renderSprayDropdown(sel, freshTanks);
+
+    appCache.beds = freshBeds;
+    allBedsList = freshBeds;
+    renderSprayBedGrid();
   } catch (err) {
     console.error(err);
   }
 }
 
-// -------------------separator--------------------------//
-
 function renderSprayDropdown(sel, tanks) {
   const currentVal = sel.value;
   sel.innerHTML = '<option value="">-- เลือกถังที่รอพ่น --</option>';
   tanks.forEach(t => {
-    sel.innerHTML += `<option value="${t.rowIndex}">ถัง ${t.tankNo}: ${t.formula}</option>`;
+    sel.innerHTML += `<option value="${t.rowIndex}" data-ref-id="${t.refId}">ถัง ${t.tankNo}: ${t.formula}</option>`;
   });
   if (currentVal) sel.value = currentVal;
 }
-
-
-// -------------------separator--------------------------//
 
 function onSprayTankSelectChange() {
   const idx = document.getElementById('sprayTankSelect').value;
@@ -1150,35 +1247,64 @@ function onSprayTankSelectChange() {
   }
 }
 
-
-// -------------------separator--------------------------//
-
 async function submitSpray() {
-  const idx = document.getElementById('sprayTankSelect').value;
+  const sel = document.getElementById('sprayTankSelect');
+  const idx = sel.value;
   if (!idx) {
     alert('กรุณาเลือกถัง');
     return;
   }
+
+  const selectedOption = sel.options[sel.selectedIndex];
+  const refId = selectedOption ? selectedOption.dataset.refId : '';
+
+  // ดึงค่าโรงที่เลือกทั้งหมด (เช่น "1 all, 2")
+  const selectedHouses = Array.from(
+    document.querySelectorAll('#sprayHouseGrid .house-btn.active')
+  ).map(btn => btn.dataset.val);
+
+  // ดึงค่าแปลงที่เลือกทั้งหมด (เช่น "2-1, 2-4")
+  const selectedBeds = Array.from(
+    document.querySelectorAll('#sprayBedGrid .bed-btn.active')
+  ).map(btn => btn.dataset.val);
+
+  if (selectedHouses.length === 0) {
+    alert('กรุณาเลือกโรงที่พ่นอย่างน้อย 1 โรง');
+    return;
+  }
+
+  // ถ้ามีการเลือกโรงแบบเจาะจง (1-5 ที่ไม่ใช่ all) บังคับให้เลือกแปลงด้วย
+  const hasSingleHouse = selectedHouses.some(h => ['1', '2', '3', '4', '5'].includes(h));
+  if (hasSingleHouse && selectedBeds.length === 0) {
+    alert('กรุณาเลือกแปลงที่พ่นสำหรับโรงที่ระบุ');
+    return;
+  }
+
+  const note = document.getElementById('sprayNote').value;
+
   setLoader(true);
   try {
-
-
     await apiRequest('updateSprayRecord', {
       user: currentUser.name,
       rowIndex: idx,
-      sprayLocation: document.getElementById('sprayLocation').value
+      refId: refId,
+      sprayHouses: selectedHouses.join(', '),
+      sprayBeds: selectedBeds.join(', '),
+      note: note
     });
 
-    // 1. Remove the sprayed tank from cache immediately so the dropdown updates without waiting
+    // ลบถังที่พ่นแล้วออกจากแคชทันที
     if (appCache.tanks) {
       appCache.tanks = appCache.tanks.filter(t => String(t.rowIndex) !== String(idx));
     }
 
-    // 2. Clear inputs & refresh the dropdown on the same page
-    document.getElementById('sprayLocation').value = '';
+    // รีเซ็ตฟอร์มทั้งหมด
+    document.getElementById('sprayNote').value = '';
+    initSprayHouseGrid();
+    renderSprayBedGrid();
     loadSprayTanks();
+
     alert('บันทึกการพ่นเรียบร้อย');
-    //backToMenu();
   } finally {
     setLoader(false);
   }
